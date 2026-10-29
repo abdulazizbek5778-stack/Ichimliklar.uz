@@ -3,11 +3,47 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-dokonify-secret-key-abdulaziz-xurramov-2026'
 
-DEBUG = True
+def load_env(path):
+    """Oddiy .env yuklovchi. python-dotenv o'rnatilgan bo'lsa undan foydalanadi,
+    aks holda faylni o'zi o'qiydi (qo'shimcha kutubxona talab qilmaydi)."""
+    if not path.exists():
+        return
+    try:
+        from dotenv import load_dotenv
 
-ALLOWED_HOSTS = ['*']
+        load_dotenv(path)
+        return
+    except ImportError:
+        pass
+    for raw in path.read_text(encoding='utf-8').splitlines():
+        line = raw.strip()
+        if not line or line.startswith('#') or '=' not in line:
+            continue
+        key, value = line.split('=', 1)
+        value = value.strip().strip('"').strip("'")
+        os.environ.setdefault(key.strip(), value)
+
+
+load_env(BASE_DIR / '.env')
+
+
+def env_bool(name, default):
+    return os.environ.get(name, default).strip().lower() in ('1', 'true', 'yes', 'on')
+
+
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-dokonify-secret-key-abdulaziz-xurramov-2026',
+)
+
+DEBUG = env_bool('DJANGO_DEBUG', 'True')
+
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
+    if host.strip()
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -50,10 +86,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+DB_ENGINE = os.environ.get('DB_ENGINE', 'django.db.backends.sqlite3')
+DB_NAME = os.environ.get('DB_NAME', '').strip()
+
+if DB_NAME:
+    # SQLite uchun nisbiy yo'l loyiha papkasiga bog'lanadi
+    if DB_ENGINE.endswith('sqlite3') and not os.path.isabs(DB_NAME):
+        DB_NAME = str(BASE_DIR / DB_NAME)
+else:
+    DB_NAME = str(BASE_DIR / 'db.sqlite3')
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': DB_ENGINE,
+        'NAME': DB_NAME,
+        'USER': os.environ.get('DB_USER', ''),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'HOST': os.environ.get('DB_HOST', ''),
+        'PORT': os.environ.get('DB_PORT', ''),
     }
 }
 

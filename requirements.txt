@@ -1,0 +1,38 @@
+# =======================================
+# ichimliklar.uz — Python kutubxonalari
+# O'rnatish:  pip install -r requirements.txt
+# =======================================
+
+# --- Asosiy (majburiy) ---
+Django>=5.0,<7.0            # Web framework (loyihada 6.1.1 sinalgan)
+
+# --- .env faylini o'qish (core/settings.py) ---
+python-dotenv>=1.0          # bo'lmasa settings.py o'zi o'qiydi, lekin tavsiya etiladi
+
+# --- Google OAuth 2.0 (shop/views.py) ---
+google-auth>=2.20           # Google bilan kirishni tekshirish
+
+# --- Rasm maydonlari uchun (media/) ---
+Pillow>=10.0
+
+# --- Production server ---
+gunicorn>=21.2              # Linux/macOS uchun WSGI server
+
+# =======================================
+# Ixtiyoriy (kerak bo'lsa izohdan chiqaring)
+# =======================================
+
+# PostgreSQL ishlatilsa (DB_ENGINE=django.db.backends.postgresql):
+# psycopg2-binary>=2.9
+
+# Statik fayllarni siqish/keshlash (settings.py ga middleware qo'shish kerak):
+# whitenoise>=6.6
+
+# Rasm yuklashni bulutga saqlash:
+# django-storages>=1.14
+# boto3>=1.34
+
+# API uchun (hozircha ishlatilmaydi):
+# djangorestframework>=3.15
+# django-cors-headers>=4.3
+requests==2.34.2
