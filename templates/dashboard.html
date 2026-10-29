@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dokonify — Do'kon Egasining Boshqaruv Paneli</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    .dash-sidebar {
+      background: #0b1120;
+      border-right: 1px solid var(--border-subtle);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dash-menu {
+      list-style: none;
+      margin-top: 2rem;
+      flex: 1;
+    }
+
+    .dash-menu li {
+      margin-bottom: 0.5rem;
+    }
+
+    .dash-menu-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-weight: 500;
+      transition: var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .dash-menu-link:hover, .dash-menu-link.active {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+    }
+
+    .dash-main {
+      padding: 2rem 2.5rem;
+      overflow-y: auto;
+    }
+
+    .dash-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .stat-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-val {
+      font-size: 1.9rem;
+      font-weight: 800;
+      margin: 0.5rem 0 0.25rem 0;
+      color: #f8fafc;
+    }
+
+    .stat-change {
+      font-size: 0.8rem;
+      color: #10b981;
+      font-weight: 600;
+    }
+
+    .data-table-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      margin-top: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th {
+      padding: 0.75rem 1rem;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-subtle);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-secondary);
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .status-yangi { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
+    .status-yetkazilmoqda { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .status-tugallandi { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .status-bekor { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+
+    /* Modal Form */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 250;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-box {
+      background: #0f172a;
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-xl);
+      width: 520px;
+      max-width: 95vw;
+      padding: 2rem;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    }
+
+    @media (max-width: 860px) {
+      .dashboard-layout { grid-template-columns: 1fr; }
+      .dash-sidebar { display: none; }
+      .dash-main { padding: 1.5rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="dash-sidebar">
+      <a href="index.html" class="brand-logo" style="margin-bottom: 1.5rem;">
+        <div class="brand-icon">🛍️</div>
+        <span>Dokonify<span style="color: var(--primary)">.uz</span></span>
+      </a>
+
+      <div style="background: rgba(255,255,255,0.04); border-radius: 12px; padding: 0.75rem 1rem; border: 1px solid var(--border-subtle);">
+        <div style="font-size: 0.75rem; color: var(--text-muted);">Sizning do'koningiz:</div>
+        <div id="dashStoreName" style="font-weight: 700; color: #fff; font-size: 1rem; display: flex; align-items: center; gap: 0.4rem; margin-top: 0.2rem;">
+          <span id="dashStoreIcon">🥤</span> <span>Chashma Drinks</span>
+        </div>
+      </div>
+
+      <ul class="dash-menu">
+        <li><a class="dash-menu-link active" onclick="switchTab('orders', this)"><i class="fa fa-receipt"></i> Buyurtmalar</a></li>
+        <li><a class="dash-menu-link" onclick="switchTab('products', this)"><i class="fa fa-boxes-stacked"></i> Mahsulotlar</a></li>
+        <li><a class="dash-menu-link" onclick="switchTab('settings', this)"><i class="fa fa-sliders"></i> Sozlamalar</a></li>
+      </ul>
+
+      <div style="margin-top: auto; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+        <a href="store.html" target="_blank" class="btn btn-secondary w-100" style="font-size: 0.85rem;">
+          <i class="fa fa-arrow-up-right-from-square"></i> Do'kon Vitrinasi ↗
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dash-main">
+      <header class="dash-header">
+        <div>
+          <h1 style="font-size: 1.8rem;" id="greetingTitle">Boshqaruv Paneli</h1>
+          <p style="font-size: 0.9rem;">Do'koningizdagi savdo va buyurtmalarni boshqaring</p>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+          <button class="btn btn-primary" onclick="openAddProductModal()">
+            <i class="fa fa-plus"></i> Yangi Mahsulot
+          </button>
+        </div>
+      </header>
+
+      <!-- Stats Cards -->
+      <section class="stat-cards-grid">
+        <div class="stat-card">
+          <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">JAMI TUSHUM</span>
+          <div class="stat-val" id="statRevenue">0 so'm</div>
+          <div class="stat-change">↑ +24% o'sish bu oyda</div>
+        </div>
+
+        <div class="stat-card">
+          <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">BUYURTMALAR</span>
+          <div class="stat-val" id="statOrders">0 ta</div>
+          <div class="stat-change" style="color: #60a5fa;">● Faol savdolar</div>
+        </div>
+
+        <div class="stat-card">
+          <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">MAHSULOTLAR TURI</span>
+          <div class="stat-val" id="statProducts">0 xil</div>
+          <div class="stat-change" style="color: #a78bfa;">Sotuvda mavjud</div>
+        </div>
+
+        <div class="stat-card">
+          <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">YECHIB OLISH UCHUN</span>
+          <div class="stat-val" id="statBalance" style="color: #34d399;">0 so'm</div>
+          <button onclick="alert('Pul mablag\'i Click/Payme hisobingizga 1 daqiqada o\'tkaziladi!')" style="background: none; border: none; color: #60a5fa; font-size: 0.8rem; cursor: pointer; padding: 0; margin-top: 4px; font-weight: 600;">
+            Hamyonga o'tkazish ➜
+          </button>
+        </div>
+      </section>
+
+      <!-- Orders Section Tab -->
+      <section id="tabOrders" class="data-table-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h2 style="font-size: 1.3rem;">Yangi Buyurtmalar Ro'yxati</h2>
+          <span style="font-size: 0.85rem; color: #10b981;">● Jonli yangilanmoqda</span>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Mijoz</th>
+                <th>Mahsulotlar</th>
+                <th>To'lov</th>
+                <th>Summa</th>
+                <th>Status</th>
+                <th>Amal</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+              <!-- Orders injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Products Section Tab -->
+      <section id="tabProducts" class="data-table-card" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h2 style="font-size: 1.3rem;">Mahsulotlar Katalogi</h2>
+          <button class="btn btn-primary btn-sm" onclick="openAddProductModal()">
+            + Mahsulot Qo'shish
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Rasm</th>
+                <th>Nomi</th>
+                <th>Narxi</th>
+                <th>Qoldiq</th>
+                <th>Amallar</th>
+              </tr>
+            </thead>
+            <tbody id="productsTableBody">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Settings Section Tab -->
+      <section id="tabSettings" class="data-table-card" style="display: none;">
+        <h2 style="font-size: 1.3rem; margin-bottom: 1.5rem;">Do'kon va Integratsiya Sozlamalari</h2>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+          <div>
+            <label style="font-size: 0.85rem; color: var(--text-muted);">Do'kon nomi</label>
+            <input type="text" id="settingStoreName" class="wizard-input" style="margin-top: 0.4rem; margin-bottom: 1rem;">
+
+            <label style="font-size: 0.85rem; color: var(--text-muted);">Bog'lanish telefoni</label>
+            <input type="text" id="settingStorePhone" class="wizard-input" style="margin-top: 0.4rem; margin-bottom: 1rem;">
+
+            <label style="font-size: 0.85rem; color: var(--text-muted);">Aksiya e'lon matni (Banner)</label>
+            <textarea id="settingStoreBanner" class="wizard-input" rows="3" style="margin-top: 0.4rem;"></textarea>
+          </div>
+
+          <div>
+            <div style="background: rgba(34, 158, 217, 0.1); border: 1px solid rgba(34, 158, 217, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
+              <h4 style="color: #38bdf8; font-size: 0.95rem; margin-bottom: 0.5rem;"><i class="fa-brands fa-telegram"></i> Telegram Bot Integratsiyasi</h4>
+              <p style="font-size: 0.8rem;">Yangi buyurtmalar avtomatik sizning botingiz orqali shaxsiy Telegramingizga keladi.</p>
+              <input type="text" id="settingTgBot" class="wizard-input" placeholder="@bot_nomi" style="margin-top: 0.5rem;">
+            </div>
+
+            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 1rem;">
+              <h4 style="color: #34d399; font-size: 0.95rem; margin-bottom: 0.5rem;"><i class="fa fa-credit-card"></i> Click & Payme Merchant</h4>
+              <p style="font-size: 0.8rem;">To'lovlar to'g'ridan-to'g'ri bank hisobingizga tushadi.</p>
+              <input type="text" class="wizard-input" value="MERCHANT-UZ-9842" style="margin-top: 0.5rem;" readonly>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="saveSettingsForm()" class="btn btn-primary" style="margin-top: 1.5rem;">
+          Sozlamalarni Saqlash ✓
+        </button>
+      </section>
+    </main>
+  </div>
+
+  <!-- Add Product Modal -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1.3rem;">Yangi Mahsulot Qo'shish</h3>
+        <button onclick="closeProductModal()" style="background: none; border: none; color: white; font-size: 1.3rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="newProductForm">
+        <div style="margin-bottom: 1rem;">
+          <label style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.4rem;">
+            📸 Rasm yuklash (Kompyuteringizdan tanlang)
+          </label>
+          <input type="file" id="dashLocalFile" accept="image/*" class="wizard-input" style="padding: 0.5rem; margin-bottom: 0.5rem;">
+          
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.4rem;">Yoki tayyor rasmlardan birini tanlang:</div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <img class="img-preset-chip active" src="https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=400&q=80" onclick="selectDashImage(this.src)">
+            <img class="img-preset-chip" src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=400&q=80" onclick="selectDashImage(this.src)">
+            <img class="img-preset-chip" src="https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?auto=format&fit=crop&w=400&q=80" onclick="selectDashImage(this.src)">
+            <img class="img-preset-chip" src="https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=400&q=80" onclick="selectDashImage(this.src)">
+          </div>
+          <input type="hidden" id="pImage" value="https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=400&q=80">
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+          <label style="font-size: 0.85rem; color: var(--text-muted);">Mahsulot nomi</label>
+          <input type="text" id="pName" class="wizard-input" required placeholder="Masalan: Pepsi 1.5L">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <label style="font-size: 0.85rem; color: var(--text-muted);">Narxi (so'm)</label>
+            <input type="number" id="pPrice" class="wizard-input" required placeholder="12000">
+          </div>
+          <div>
+            <label style="font-size: 0.85rem; color: var(--text-muted);">Soni / Ombor qoldig'i (dona)</label>
+            <input type="number" id="pStock" class="wizard-input" required value="30">
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <label style="font-size: 0.85rem; color: var(--text-muted);">Tavsif</label>
+          <textarea id="pDesc" class="wizard-input" rows="2" placeholder="Qisqacha ta'rif..."></textarea>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+          <button type="submit" class="btn btn-primary" style="flex: 1;">Saqlash va Joylash</button>
+          <button type="button" onclick="closeProductModal()" class="btn btn-secondary">Bekor qilish</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    function selectDashImage(url) {
+      document.getElementById('pImage').value = url;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadDashboardData();
+
+      const fileInput = document.getElementById('dashLocalFile');
+      if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              document.getElementById('pImage').value = event.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      // New Product Form Handler
+      const form = document.getElementById('newProductForm');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const store = getStore();
+
+        const name = document.getElementById('pName').value.trim();
+        const price = parseFloat(document.getElementById('pPrice').value) || 0;
+        const stock = parseInt(document.getElementById('pStock').value, 10) || 1;
+        const image = document.getElementById('pImage').value.trim();
+        const desc = document.getElementById('pDesc').value.trim();
+
+        const newP = {
+          id: Date.now(),
+          name: name,
+          price: price,
+          stock: stock,
+          image: image,
+          description: desc,
+          likes: 0,
+          comments: []
+        };
+
+        store.products.unshift(newP);
+        saveStore(store);
+
+        closeProductModal();
+        loadDashboardData();
+        alert('Yangi mahsulot do\'koningizga muvaffaqiyatli qo\'shildi!');
+      });
+    });
+
+    function loadDashboardData() {
+      const store = getStore();
+
+      document.getElementById('dashStoreName').textContent = store.name;
+      document.getElementById('dashStoreIcon').textContent = store.icon || '🛍️';
+
+      // Stats
+      const totalRevenue = (store.orders || []).reduce((acc, o) => acc + (o.status !== 'Bekor qilindi' ? o.total : 0), 0);
+      document.getElementById('statRevenue').textContent = formatSum(totalRevenue);
+      document.getElementById('statOrders').textContent = (store.orders || []).length + " ta";
+      document.getElementById('statProducts').textContent = (store.products || []).length + " xil";
+      document.getElementById('statBalance').textContent = formatSum(store.balance || totalRevenue);
+
+      // Populate Settings Inputs
+      document.getElementById('settingStoreName').value = store.name;
+      document.getElementById('settingStorePhone').value = store.phone || '';
+      document.getElementById('settingStoreBanner').value = store.bannerText || '';
+      document.getElementById('settingTgBot').value = store.tgBot || '';
+
+      // Render Orders Table
+      const ordersTbody = document.getElementById('ordersTableBody');
+      const orders = store.orders || [];
+
+      if (orders.length === 0) {
+        ordersTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">Hozircha buyurtmalar yo'q.</td></tr>`;
+      } else {
+        ordersTbody.innerHTML = orders.map(o => {
+          let badgeClass = 'status-yangi';
+          if (o.status === 'Yetkazilmoqda') badgeClass = 'status-yetkazilmoqda';
+          if (o.status === 'Tugallandi') badgeClass = 'status-tugallandi';
+          if (o.status === 'Bekor qilindi') badgeClass = 'status-bekor';
+
+          return `
+            <tr>
+              <td><strong style="color: #fff;">${o.id}</strong><br><small style="color: var(--text-muted);">${o.date}</small></td>
+              <td><strong>${o.customer}</strong><br><small>${o.phone}</small><br><small style="color: #94a3b8;">${o.address}</small></td>
+              <td style="max-width: 200px;">${o.items}</td>
+              <td><span style="color: #38bdf8;">${o.payment}</span></td>
+              <td><strong>${formatSum(o.total)}</strong></td>
+              <td><span class="status-badge ${badgeClass}">${o.status}</span></td>
+              <td>
+                <select onchange="updateOrderStatus('${o.id}', this.value)" style="background: #1e293b; color: white; border: 1px solid var(--border-subtle); padding: 4px 8px; border-radius: 6px; font-size: 0.8rem;">
+                  <option value="Yangi" ${o.status === 'Yangi' ? 'selected' : ''}>Yangi</option>
+                  <option value="Yetkazilmoqda" ${o.status === 'Yetkazilmoqda' ? 'selected' : ''}>Yetkazilmoqda</option>
+                  <option value="Tugallandi" ${o.status === 'Tugallandi' ? 'selected' : ''}>Tugallandi ✓</option>
+                  <option value="Bekor qilindi" ${o.status === 'Bekor qilindi' ? 'selected' : ''}>Bekor qilindi ✕</option>
+                </select>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Render Products Table
+      const productsTbody = document.getElementById('productsTableBody');
+      const products = store.products || [];
+
+      productsTbody.innerHTML = products.map(p => `
+        <tr>
+          <td><img src="${p.image}" alt="${p.name}" style="width: 48px; height: 48px; border-radius: 8px; object-fit: cover;"></td>
+          <td><strong>${p.name}</strong><br><small style="color: var(--text-muted);">${p.description ? p.description.slice(0, 45) + '...' : ''}</small></td>
+          <td><span style="color: #38bdf8; font-weight: 700;">${formatSum(p.price)}</span></td>
+          <td>${p.stock || 20} dona</td>
+          <td>
+            <button onclick="deleteProduct(${p.id})" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; padding: 4px 10px; border-radius: 6px; cursor: pointer;">
+              <i class="fa fa-trash"></i> O'chirish
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function switchTab(tab, element) {
+      document.querySelectorAll('.dash-menu-link').forEach(l => l.classList.remove('active'));
+      element.classList.add('active');
+
+      document.getElementById('tabOrders').style.display = tab === 'orders' ? 'block' : 'none';
+      document.getElementById('tabProducts').style.display = tab === 'products' ? 'block' : 'none';
+      document.getElementById('tabSettings').style.display = tab === 'settings' ? 'block' : 'none';
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+      const store = getStore();
+      const order = store.orders.find(o => o.id === orderId);
+      if (order) {
+        order.status = newStatus;
+        saveStore(store);
+        loadDashboardData();
+      }
+    }
+
+    function deleteProduct(id) {
+      if (!confirm('Haqiqatdan ham bu mahsulotni o\'chirmoqchimisiz?')) return;
+      const store = getStore();
+      store.products = store.products.filter(p => p.id !== id);
+      saveStore(store);
+      loadDashboardData();
+    }
+
+    function openAddProductModal() {
+      document.getElementById('productModal').style.display = 'flex';
+      document.getElementById('pName').focus();
+    }
+
+    function closeProductModal() {
+      document.getElementById('productModal').style.display = 'none';
+    }
+
+    function saveSettingsForm() {
+      const store = getStore();
+      store.name = document.getElementById('settingStoreName').value.trim() || store.name;
+      store.phone = document.getElementById('settingStorePhone').value.trim() || store.phone;
+      store.bannerText = document.getElementById('settingStoreBanner').value.trim();
+      store.tgBot = document.getElementById('settingTgBot').value.trim();
+
+      saveStore(store);
+      alert('Sozlamalar muvaffaqiyatli saqlandi! Endi vitrinada aks etadi.');
+      loadDashboardData();
+    }
+  </script>
+</body>
+</html>

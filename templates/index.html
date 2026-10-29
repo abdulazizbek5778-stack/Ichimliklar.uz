@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dokonify — 3 daqiqada Web & Telegram Do'kon Yaratish Platformasi</title>
+  <meta name="description" content="Kichik va o'rta bizneslar uchun avtomatlashtirilgan internet do'kon va Telegram WebApp platformasi. Click, Payme va buyurtmalar boshqaruvi.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛍️</text></svg>">
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">🛍️</div>
+        <span>Dokonify<span style="color: var(--primary)">.uz</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#demo">Onlayn Demo</a></li>
+        <li><a href="#features">Xususiyatlar</a></li>
+        <li><a href="#pricing">Tariflar</a></li>
+        <li><a href="store.html" target="_blank" style="color: #38bdf8;">Do'kon Namunasi ↗</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="dashboard.html" class="btn btn-secondary btn-sm">Boshqaruv Paneli</a>
+        <a href="#demo" class="btn btn-primary btn-sm">Do'kon Yaratish</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="pill-badge">
+        <span class="pulse-dot"></span>
+        <span>Yangi Avlod Savdo Tizimi • Web + Telegram Bot</span>
+      </div>
+
+      <h1>
+        Do'koningizni <span class="gradient-text">3 daqiqada</span> oching, savdoni avtomatlashtiring.
+      </h1>
+
+      <p>
+        Dasturchi yollamasdan, kod yozmasdan zamonaviy Web-sayt va Telegram WebApp do'koningizni ishga tushiring. Click, Payme to'lovlari va buyurtmalarni bir joydan boshqaring.
+      </p>
+
+      <div class="hero-cta">
+        <a href="#demo" class="btn btn-primary btn-lg">
+          Bepul Boshlash 🚀
+        </a>
+        <a href="store.html" class="btn btn-secondary btn-lg">
+          Vitrinani Ko'rish (Demo) 📱
+        </a>
+      </div>
+
+      <!-- Live Interactive Demo Box -->
+      <div class="preview-wrapper" id="demo">
+        <div class="preview-header">
+          <div class="window-dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <div class="preview-address">
+            <span>🔒 https://dokonify.uz/</span>
+            <span id="previewSlug" style="color: #60a5fa; font-weight: 600;">chashma-drinks</span>
+          </div>
+          <div style="font-size: 0.85rem; color: #10b981; font-weight: 600;">
+            ● Jonli Sinov
+          </div>
+        </div>
+
+        <div class="preview-grid">
+          <!-- Wizard Form -->
+          <div class="wizard-box">
+            <h3 class="wizard-title">Do'koningizni sozlang</h3>
+            <p style="font-size: 0.9rem; margin-bottom: 1.5rem;">Nomini yozing va telefon ekranida real vaqtda o'zgarishini ko'ring:</p>
+
+            <div class="wizard-step">
+              <label for="storeNameInput">Do'kon nomi</label>
+              <input type="text" id="storeNameInput" class="wizard-input" value="Chashma Drinks" placeholder="Masalan: Rayhon Boutique, Burger House...">
+            </div>
+
+            <div class="wizard-step">
+              <label>Faoliyat yo'nalishi</label>
+              <div class="category-chips" id="categoryChips">
+                <button type="button" class="chip active" data-cat="drinks">🥤 Ichimliklar</button>
+                <button type="button" class="chip" data-cat="clothing">👗 Kiyim-kechak</button>
+                <button type="button" class="chip" data-cat="food">🍔 Fast Food & Taom</button>
+                <button type="button" class="chip" data-cat="electronics">📱 Gadjetlar</button>
+              </div>
+            </div>
+
+            <div class="wizard-step">
+              <label for="storePhoneInput">Bog'lanish / Telegram</label>
+              <input type="text" id="storePhoneInput" class="wizard-input" value="+998 90 123-45-67">
+            </div>
+
+            <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">
+              <button id="saveAndLaunchBtn" class="btn btn-primary" style="flex: 1;">
+                Do'konni Ochish ⚡
+              </button>
+              <a href="dashboard.html" class="btn btn-secondary">
+                Admin Panel ⚙️
+              </a>
+            </div>
+          </div>
+
+          <!-- Phone Mockup Preview -->
+          <div class="phone-mockup">
+            <div class="phone-notch"></div>
+            <div class="phone-screen" id="mockupScreen">
+              <div class="store-header-mini">
+                <div class="store-name-mini">
+                  <span id="mockupIcon">🥤</span>
+                  <span id="mockupTitle">Chashma Drinks</span>
+                </div>
+                <div style="font-size: 0.8rem; background: rgba(59,130,246,0.2); padding: 2px 8px; border-radius: 99px; color: #60a5fa;">
+                  🛒 <span id="mockupCartCount">0</span>
+                </div>
+              </div>
+
+              <div style="margin-bottom: 0.75rem; background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(139,92,246,0.2)); border-radius: 8px; padding: 0.6rem; border: 1px solid rgba(255,255,255,0.08);">
+                <div style="font-size: 0.7rem; color: #94a3b8;">Xush kelibsiz!</div>
+                <div style="font-size: 0.85rem; font-weight: 700; color: #fff;">Yetkazib berish xizmati 🚀</div>
+              </div>
+
+              <div class="product-grid-mini" id="mockupProducts">
+                <!-- Injected via JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <div class="section-head">
+        <h2>Biznesingizni rivojlantirish uchun <span class="gradient-text">hamma narsa</span> tayyor</h2>
+        <p>Siz faqat mahsulot qo'shasiz, qolgan barcha texnik ishlarni Dokonify o'z zimmasiga oladi.</p>
+      </div>
+
+      <div class="cards-grid">
+        <div class="feature-card">
+          <div class="card-icon">⚡</div>
+          <h3>Tezkor Web & Mobil Sayt</h3>
+          <p>Har qanday qurilmada chaqmoqdek tez yuklanadigan, zamonaviy dizayndagi onlayn katalog va xarid tizimi.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-icon">🤖</div>
+          <h3>Telegram WebApp Integratsiyasi</h3>
+          <p>Xaridorlaringiz Telegramdan chiqmasdan, qulay mini-app orqali buyurtma berishadi va chek olishadi.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-icon">💳</div>
+          <h3>Click & Payme To'lovlari</h3>
+          <p>Mijozlar buyurtmani kartadan yoki yetkazilganda naqd pul bilan to'lashlari mumkin.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-icon">📊</div>
+          <h3>Qulay Boshqaruv Paneli</h3>
+          <p>Buyurtmalar oqimi, tushumlar, mijozlar va ombor qoldig'ini bitta oyna orqali real vaqtda kuzating.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-icon">🔔</div>
+          <h3>Avtomatik Bildirishnomalar</h3>
+          <p>Yangi buyurtma tushganda adminning shaxsiy Telegramiga bir zumda to'liq chek va xabar boradi.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-icon">🌐</div>
+          <h3>Shaxsiy Domen & SEO</h3>
+          <p>O'zingizning <code>ichimliklar.uz</code> yoki <code>brend.uz</code> domeningizni ulab, Google qidiruvida birinchi o'ringa chiqing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="pricing-section" id="pricing">
+    <div class="container">
+      <div class="section-head">
+        <h2>Shaffof va hamyonbop <span class="gradient-text">tariflar</span></h2>
+        <p>Kichik loyihadan tortib yirik savdo tarmoqlarigacha to'g'ri keladigan yechimlar.</p>
+      </div>
+
+      <div class="pricing-grid">
+        <!-- Starter Plan -->
+        <div class="pricing-card">
+          <h3 style="font-size: 1.4rem;">Start</h3>
+          <p style="font-size: 0.9rem;">Yangi boshlovchi tadbirkorlar uchun</p>
+          <div class="price-tag">
+            Bepul
+          </div>
+          <ul class="features-list">
+            <li>✓ 15 tagacha mahsulot</li>
+            <li>✓ Web katalog sayt</li>
+            <li>✓ Naqd to'lov tizimi</li>
+            <li>✓ Standart qidiruv</li>
+            <li>— Telegram WebApp (mavjud emas)</li>
+          </ul>
+          <a href="store.html" class="btn btn-secondary w-100">Boshlash</a>
+        </div>
+
+        <!-- Pro Plan (Featured) -->
+        <div class="pricing-card featured">
+          <div class="pricing-badge">🔥 Eng Ommabop</div>
+          <h3 style="font-size: 1.4rem;">Biznes Pro</h3>
+          <p style="font-size: 0.9rem;">Do'konlar, kafelar va doimiy savdo uchun</p>
+          <div class="price-tag">
+            149,000 <span class="price-period">so'm / oy</span>
+          </div>
+          <ul class="features-list">
+            <li>✓ Cheksiz mahsulotlar</li>
+            <li>✓ Telegram WebApp & Bot</li>
+            <li>✓ Click & Payme to'lovlari</li>
+            <li>✓ Admin Boshqaruv Paneli</li>
+            <li>✓ Telegramga yangi buyurtma xabari</li>
+            <li>✓ Savdo statistikasi & grafiklar</li>
+          </ul>
+          <a href="#demo" class="btn btn-primary w-100">Pro Tarifga Ulanish</a>
+        </div>
+
+        <!-- Enterprise Plan -->
+        <div class="pricing-card">
+          <h3 style="font-size: 1.4rem;">Brend (Katta Savdo)</h3>
+          <p style="font-size: 0.9rem;">Katta kompaniyalar va ulgurji savdo uchun</p>
+          <div class="price-tag">
+            349,000 <span class="price-period">so'm / oy</span>
+          </div>
+          <ul class="features-list">
+            <li>✓ Hamma Pro imkoniyatlar</li>
+            <li>✓ Shaxsiy domen (.UZ) ulash</li>
+            <li>✓ Bir nechta filial va ombor</li>
+            <li>✓ 1C va CRM integratsiya</li>
+            <li>✓ 24/7 Maxsus texnik menejer</li>
+          </ul>
+          <a href="#demo" class="btn btn-secondary w-100">Bog'lanish</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section class="cta-banner">
+    <div class="container">
+      <div class="cta-box">
+        <h2>Bugun o'z do'koningizni oching!</h2>
+        <p>Mijozlaringiz kutmoqda. Bir necha daqiqada do'koningizni sozlang va birinchi buyurtmalarni qabul qiling.</p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+          <a href="#demo" class="btn btn-primary btn-lg">Hozir Bepul Yaratish ⚡</a>
+          <a href="dashboard.html" class="btn btn-secondary btn-lg">Admin Panelga Kirish 📊</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="brand-logo" style="margin-bottom: 1rem;">
+            <div class="brand-icon">🛍️</div>
+            <span>Dokonify<span style="color: var(--primary)">.uz</span></span>
+          </div>
+          <p style="font-size: 0.9rem; max-width: 300px;">
+            O'zbekistondagi tadbirkorlar uchun eng qulay onlayn savdo va avtomatlashtirish platformasi.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Mahsulot</h4>
+          <ul class="footer-links">
+            <li><a href="#demo">Store Builder</a></li>
+            <li><a href="store.html">Vitrina namunasi</a></li>
+            <li><a href="dashboard.html">Admin Dashboard</a></li>
+            <li><a href="#pricing">Tariflar</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Integratsiyalar</h4>
+          <ul class="footer-links">
+            <li><a href="#">Telegram Bot</a></li>
+            <li><a href="#">Click Evolution</a></li>
+            <li><a href="#">Payme Business</a></li>
+            <li><a href="#">Uzum Pay</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Aloqa</h4>
+          <ul class="footer-links">
+            <li><a href="#">Telegram: @dokonify_support</a></li>
+            <li><a href="#">Telefon: +998 71 200-00-00</a></li>
+            <li><a href="#">Toshkent, O'zbekiston</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="text-align: center; border-top: 1px solid var(--border-subtle); padding-top: 2rem; font-size: 0.85rem;">
+        © 2026 Dokonify.uz — Barcha huquqlar himoyalangan. Loyiha yaratuvchisi: Xurramov Abdulaziz.
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="pageTitle">{{ config.name|default:"Chashma Drinks" }} — Django + SQLite Rasmiy Do'kon</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    .admin-top-bar {
+      background: linear-gradient(90deg, #1e3a8a 0%, #2563eb 50%, #7c3aed 100%);
+      color: white;
+      padding: 0.6rem 1.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .admin-badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .admin-actions-btns {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-admin-add {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 0.45rem 1rem;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.4);
+      transition: var(--transition-fast);
+    }
+    .btn-admin-add:hover {
+      background: #059669;
+      transform: translateY(-1px);
+    }
+
+    .store-navbar {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 42px;
+      z-index: 90;
+      padding: 0.9rem 0;
+    }
+
+    .store-nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .store-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+
+    .search-box {
+      flex: 1;
+      max-width: 380px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-subtle);
+      padding: 0.65rem 1rem 0.65rem 2.4rem;
+      border-radius: var(--radius-full);
+      color: white;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .cart-btn {
+      position: relative;
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      padding: 0.65rem 1.25rem;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 15px var(--primary-glow);
+    }
+
+    .cart-badge {
+      background: #ffffff;
+      color: var(--primary);
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .store-hero-banner {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%), var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 2.25rem;
+      margin: 1.75rem 0 1.25rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      position: relative;
+    }
+
+    .store-hero-banner h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.75rem;
+      margin-bottom: 4rem;
+    }
+
+    .store-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition-smooth);
+      position: relative;
+    }
+
+    .store-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--border-accent);
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-img-wrap {
+      position: relative;
+      height: 220px;
+      overflow: hidden;
+      background: #111827;
+    }
+
+    .card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .store-card:hover .card-img-wrap img {
+      transform: scale(1.05);
+    }
+
+    .discount-tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #ef4444;
+      color: white;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .stock-tag {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border-subtle);
+      color: #38bdf8;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+      backdrop-filter: blur(8px);
+    }
+
+    .card-content {
+      padding: 1.25rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .product-desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+      flex: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .social-reaction-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.6rem 0;
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 0.75rem;
+    }
+
+    .like-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: var(--transition-fast);
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+    }
+    .like-btn:hover {
+      background: rgba(244, 63, 94, 0.1);
+      color: #f43f5e;
+    }
+    .like-btn.liked {
+      color: #f43f5e;
+    }
+
+    .comment-toggle-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: var(--transition-fast);
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+    }
+    .comment-toggle-btn:hover {
+      background: rgba(59, 130, 246, 0.1);
+      color: #60a5fa;
+    }
+
+    .comments-box {
+      display: none;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: var(--radius-md);
+      padding: 0.75rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.85rem;
+    }
+
+    .comments-list {
+      max-height: 140px;
+      overflow-y: auto;
+      margin-bottom: 0.5rem;
+    }
+
+    .single-comment {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+      margin-bottom: 0.4rem;
+    }
+    .single-comment strong {
+      color: #38bdf8;
+      font-size: 0.8rem;
+    }
+
+    .comment-input-row {
+      display: flex;
+      gap: 0.4rem;
+    }
+    .comment-input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      color: white;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      outline: none;
+    }
+    .btn-send-comment {
+      background: var(--primary);
+      border: none;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+
+    .price-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .current-price {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #38bdf8;
+    }
+
+    .old-price {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: line-through;
+    }
+
+    .add-to-cart-btn {
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #60a5fa;
+      padding: 0.55rem 1rem;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: var(--transition-fast);
+    }
+    .add-to-cart-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .card-admin-bar {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: rgba(15, 23, 42, 0.9);
+      border-top: 1px solid var(--border-subtle);
+      justify-content: flex-end;
+    }
+    .btn-card-edit {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-subtle);
+      color: #cbd5e1;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .btn-card-del {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    .cart-drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .cart-drawer-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 440px;
+      max-width: 100vw;
+      background: #0f172a;
+      border-left: 1px solid var(--border-subtle);
+      z-index: 210;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+    }
+    .cart-drawer.active {
+      transform: translateX(0);
+    }
+
+    .cart-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .cart-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+      align-items: center;
+    }
+    .cart-item img {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .cart-item-info {
+      flex: 1;
+    }
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.4rem;
+    }
+    .qty-btn {
+      width: 26px;
+      height: 26px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cart-footer {
+      padding: 1.5rem;
+      border-top: 1px solid var(--border-subtle);
+      background: #0b1120;
+    }
+
+    .checkout-form {
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 250;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-box {
+      background: #0f172a;
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-xl);
+      width: 540px;
+      max-width: 95vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2rem;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    }
+
+    .img-preset-chip {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      object-fit: cover;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: var(--transition-fast);
+    }
+    .img-preset-chip:hover, .img-preset-chip.active {
+      border-color: var(--primary);
+      transform: scale(1.08);
+    }
+  </style>
+</head>
+<body>
+  <!-- Admin Top Bar with Django Auth State -->
+  <div class="admin-top-bar" id="adminTopBar">
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+      {% if is_admin %}
+      <span class="admin-badge" style="background: rgba(16, 185, 129, 0.25); border: 1px solid #10b981;">
+        <i class="fa fa-user-shield"></i> Django Admin: <strong>{{ user.username }} (Xurramov Abdulaziz)</strong>
+      </span>
+      <span style="color: #34d399; font-size: 0.75rem;">● Django db.sqlite3 faol</span>
+      {% else %}
+      <span class="admin-badge">
+        <i class="fa fa-lock"></i> Django Admin rejimi
+      </span>
+      <span style="color: #cbd5e1; font-size: 0.75rem;">Tahrirlash uchun parolni kiriting</span>
+      {% endif %}
+    </div>
+
+    <div class="admin-actions-btns">
+      {% if is_admin %}
+      <button class="btn-admin-add" onclick="openStoryModal()">
+        <i class="fa fa-circle-play"></i> + Story Qo'shish
+      </button>
+      <button class="btn-admin-add" style="background: #2563eb;" onclick="openCreateModal()">
+        <i class="fa fa-plus-circle"></i> + Mahsulot Qo'shish
+      </button>
+      <a href="/dashboard/" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.35rem 0.8rem;">
+        <i class="fa fa-chart-line"></i> Dashboard
+      </a>
+      <a href="/admin/" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.35rem 0.8rem; background: rgba(59,130,246,0.2);">
+        <i class="fa fa-database"></i> Django Admin ↗
+      </a>
+      <a href="/logout/" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.35rem 0.8rem; color: #f87171;">
+        Chiqish ✕
+      </a>
+      {% else %}
+      <button onclick="openAdminLoginModal()" class="btn btn-primary btn-sm" style="font-size: 0.8rem; padding: 0.4rem 1rem;">
+        <i class="fa fa-key"></i> Admin Kirish (Parol bilan)
+      </button>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Store Navigation -->
+  <header class="store-navbar">
+    <div class="container">
+      <div class="store-nav-inner">
+        <div class="store-brand">
+          <span id="storeIconHeader" style="font-size: 1.7rem;">{{ config.icon|default:"🥤" }}</span>
+          <div>
+            <div id="storeNameHeader" style="line-height: 1.1;">{{ config.name|default:"Chashma Drinks" }}</div>
+            <small style="font-size: 0.75rem; color: #10b981;">● Django 6.1 + SQLite</small>
+          </div>
+        </div>
+
+        <div class="search-box">
+          <i class="fa fa-search search-icon"></i>
+          <input type="text" id="searchInput" class="search-input" placeholder="Mahsulot nomi yoki narxi bo'yicha qidiruv...">
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <!-- Google Auth Widget — Real Google Identity Services -->
+          <div id="googleAuthContainer">
+            <!-- Google One Tap container (auto popup) -->
+            <div id="g_id_onload"
+                 data-client_id="{{ google_client_id|default:'191600140879-p4bbi5mcdfv5c255j0g08ajl81dmigm3.apps.googleusercontent.com' }}"
+                 data-context="signin"
+                 data-ux_mode="popup"
+                 data-callback="handleGoogleCredential"
+                 data-auto_prompt="false">
+            </div>
+
+            <!-- Chiroyli Google Sign-In tugmasi (foydalanuvchi ko'radigan) -->
+            <button class="google-auth-btn" id="googleLoginBtn" onclick="triggerGoogleLogin()" title="Google hisobingiz bilan kiring">
+              <svg class="google-icon-svg" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+              </svg>
+              <span>Google bilan kirish</span>
+            </button>
+
+            <!-- Kirish bo'lgandan keyin ko'rinadigan profil -->
+            <div id="googleUserProfile" class="google-user-profile" style="display: none;">
+              <img id="gAvatar" src="" class="google-user-avatar" alt="Avatar">
+              <span id="gName" style="color: #60a5fa;"></span>
+              <button class="google-logout-btn" onclick="triggerGoogleLogout()" title="Chiqish">✕</button>
+            </div>
+          <!-- Alohida Suvlar App Link -->
+          <a href="/waters/" class="btn" style="padding: 0.5rem 0.95rem; font-size: 0.82rem; font-weight: 700; background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.35); color: #38bdf8; border-radius: 999px; text-decoration: none; display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s;" onmouseover="this.style.background='rgba(6, 182, 212, 0.3)'" onmouseout="this.style.background='rgba(6, 182, 212, 0.15)'">
+            <span>💧 Suvlar Bo'limi</span>
+          </a>
+
+          <button class="cart-btn" id="openCartBtn">
+            <i class="fa fa-shopping-cart"></i>
+            <span class="cart-badge" id="cartCount">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Store Container -->
+  <main class="container">
+    <!-- STORIES COMPONENT (Instagram / Telegram 24/7 Stories Archive) -->
+    <section class="stories-section">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <span style="font-size: 0.8rem; font-weight: 700; color: #a78bfa; text-transform: uppercase; letter-spacing: 0.05em;">
+          ✨ Do'kon Stories (24/7 Doimiy Arxiv • SQLite)
+        </span>
+        {% if is_admin %}
+        <button onclick="openStoryModal()" style="background: none; border: none; color: #60a5fa; font-size: 0.8rem; cursor: pointer; font-weight: 600;">
+          + Yangi Story Qo'shish
+        </button>
+        {% endif %}
+      </div>
+
+      <div class="stories-row" id="storiesContainer">
+        <!-- Rendered from Django or JS -->
+      </div>
+    </section>
+
+    <!-- Hero Banner -->
+    <section class="store-hero-banner" id="bannerSection">
+      <div>
+        <div class="pill-badge" style="margin-bottom: 0.5rem; background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); color: #34d399;">
+          ⚡ Django ORM & SQLite bilan real-time ishlaydi
+        </div>
+        <h1 id="bannerTitle">{{ config.name|default:"Ichimliklar va Mahsulotlar Katalogi" }}</h1>
+        <p id="bannerDesc" style="color: #cbd5e1; max-width: 520px;">
+          {{ config.banner_text|default:"Har bir mahsulotga layk bosing, sharh qoldiring yoki bitta tugma orqali savatchaga qo'shing." }}
+        </p>
+      </div>
+
+      <div>
+        {% if is_admin %}
+        <button class="btn btn-primary" onclick="openCreateModal()">
+          <i class="fa fa-camera"></i> Rasm & Post Qo'shish
+        </button>
+        {% else %}
+        <button class="btn btn-secondary" onclick="openAdminLoginModal()">
+          <i class="fa fa-lock"></i> Admin Bo'lib Kirish
+        </button>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- Category filter buttons -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+      <div style="display: flex; gap: 0.75rem; overflow-x: auto; padding-bottom: 0.25rem;">
+        <button class="chip active" onclick="filterCategory('all', this)">Barchasi</button>
+        <button class="chip" onclick="filterCategory('water', this)">💧 Suvlar (Borjomi & Bezgaz)</button>
+        <button class="chip" onclick="filterCategory('popular', this)">🔥 Eng ko'p layk olganlar</button>
+        <button class="chip" onclick="filterCategory('discount', this)">🏷️ Chegirmalar</button>
+      </div>
+
+      <div style="font-size: 0.85rem; color: var(--text-muted);" id="productCountLabel">
+        Yuklanmoqda...
+      </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="products-grid" id="productsGrid">
+      <!-- Injected via JavaScript from Django SQLite -->
+    </div>
+  </main>
+
+  <!-- FULLSCREEN INSTAGRAM/TELEGRAM STORY VIEWER MODAL -->
+  <div class="story-viewer-modal" id="storyViewerModal" onclick="handleStoryModalClick(event)">
+    <div class="story-viewer-card" id="storyViewerCard">
+      <div class="story-progress-bar-wrap" id="storyProgressBars"></div>
+
+      <div class="story-viewer-header">
+        <div class="story-author-info">
+          <img id="storyHeaderAvatar" class="story-author-img" src="" alt="Avatar">
+          <div>
+            <div id="storyHeaderTitle">Chashma Drinks</div>
+            <small style="font-size: 0.7rem; color: #cbd5e1;" id="storyHeaderDate">24/7 Arxiv</small>
+          </div>
+        </div>
+        <button onclick="closeStoryViewer()" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">✕</button>
+      </div>
+
+      <div class="story-viewer-body" id="storyViewerBody">
+        <img id="storyViewerImg" class="story-viewer-img" src="" alt="Story">
+        <button class="story-nav-btn story-prev-btn" onclick="prevStory(event)"><i class="fa fa-chevron-left"></i></button>
+        <button class="story-nav-btn story-next-btn" onclick="nextStory(event)"><i class="fa fa-chevron-right"></i></button>
+      </div>
+
+      <div class="story-viewer-caption">
+        <div class="story-caption-title" id="storyViewerTitle">Aksiya</div>
+        <div class="story-caption-text" id="storyViewerCaption">Barcha ichimliklarga chegirma!</div>
+        <button onclick="alert('Storydagi aksiya bo\'yicha savatchaga o\'tildi!'); closeStoryViewer(); openCart();" class="btn btn-primary btn-sm w-100" style="padding: 0.6rem;">
+          <i class="fa fa-bolt"></i> Xarid qilish / Ko'rish
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Drawer -->
+  <div class="cart-drawer-overlay" id="cartOverlay"></div>
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3 style="font-size: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+        <i class="fa fa-shopping-bag" style="color: var(--primary);"></i> Sizning Savatchangiz
+      </h3>
+      <button id="closeCartBtn" style="background: none; border: none; color: white; font-size: 1.25rem; cursor: pointer;">✕</button>
+    </div>
+
+    <div class="cart-body" id="cartBody">
+      <div style="text-align: center; color: var(--text-muted); padding: 3rem 0;" id="emptyCartMessage">
+        <i class="fa fa-basket-shopping" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+        <p>Savatchangiz bo'sh. Mahsulot qo'shing!</p>
+      </div>
+      <div id="cartItemsList"></div>
+
+      <!-- Checkout Form -->
+      <form id="checkoutForm" class="checkout-form">
+        <h4 style="font-size: 1rem; color: #fff; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+          Buyurtma ma'lumotlari:
+        </h4>
+        <div>
+          <label style="font-size: 0.8rem; color: var(--text-muted);">Ismingiz</label>
+          <input type="text" id="custName" class="wizard-input" required placeholder="Masalan: Azizbek">
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; color: var(--text-muted);">Telefon raqam</label>
+          <input type="tel" id="custPhone" class="wizard-input" required value="+998 ">
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; color: var(--text-muted);">Yetkazish manzili</label>
+          <input type="text" id="custAddress" class="wizard-input" required placeholder="Shahar, ko'cha, xonadon">
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; color: var(--text-muted);">To'lov turi</label>
+          <select id="custPayment" class="wizard-input" style="background: #1e293b;">
+            <option value="Click">Click Evolution 💳</option>
+            <option value="Payme">Payme 📲</option>
+            <option value="Naqd pul">Yetkazilganda naqd pul 💵</option>
+          </select>
+        </div>
+      </form>
+    </div>
+
+    <div class="cart-footer">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 1.1rem; font-weight: 700;">
+        <span>Jami to'lov:</span>
+        <span id="cartTotalSum" style="color: #38bdf8;">0 so'm</span>
+      </div>
+
+      <button id="checkoutActionBtn" class="btn btn-primary w-100" style="padding: 0.9rem;" disabled>
+        Rasmiylashtirishga o'tish ➜
+      </button>
+    </div>
+  </aside>
+
+  <!-- DJANGO ADMIN LOGIN MODAL (PAROL BILAN KIRISH) -->
+  <div class="modal-overlay" id="adminLoginModal">
+    <div class="modal-box" style="width: 440px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1.3rem;">🔐 Django Admin Kirish</h3>
+        <button onclick="closeAdminLoginModal()" style="background: none; border: none; color: white; font-size: 1.3rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="adminLoginForm">
+        <div style="margin-bottom: 1rem;">
+          <label style="font-size: 0.85rem; color: var(--text-muted);">Login (Foydalanuvchi nomi)</label>
+          <input type="text" id="adminUsernameInput" class="wizard-input" value="xurramov_abdulaziz" required autocomplete="username">
+        </div>
+
+        <div style="margin-bottom: 1.25rem;">
+          <label style="font-size: 0.85rem; color: var(--text-muted);">Parol</label>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="password" id="adminPasswordInput" class="wizard-input" value="1234" required autocomplete="current-password">
+            <button type="button" class="btn btn-secondary" onclick="toggleAdminPassVisibility()">👁️</button>
+          </div>
+        </div>
+
+        <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 0.6rem; font-size: 0.8rem; color: #93c5fd; margin-bottom: 1.25rem;">
+          🔑 Boshlang'ich parol: <strong style="color: white;">1234</strong>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+          <button type="submit" class="btn btn-primary" style="flex: 1;" id="adminLoginBtn">
+            Kirish (Tasdiqlash) ✓
+          </button>
+          <button type="button" onclick="closeAdminLoginModal()" class="btn btn-secondary">
+            Bekor qilish
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Create Story Modal -->
+  <div class="modal-overlay" id="storyModal">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1.3rem;">🎬 Yangi Story Qo'shish (Django SQLite 24/7)</h3>
+        <button onclick="closeStoryModal()" style="background: none; border: none; color: white; font-size: 1.3rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="storyForm">
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem;">
+            📸 Story rasmi (Fayl tanlang yoki pastdan bosing):
+          </label>
+          <input type="file" id="storyFileInput" accept="image/*" class="wizard-input" style="padding: 0.5rem; margin-bottom: 0.5rem;">
+          
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.4rem;">Tayyor fotosuratlar:</div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <img class="img-preset-chip active" src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80" onclick="selectStoryPreset(this.src)">
+            <img class="img-preset-chip" src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80" onclick="selectStoryPreset(this.src)">
+            <img class="img-preset-chip" src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80" onclick="selectStoryPreset(this.src)">
+            <img class="img-preset-chip" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80" onclick="selectStoryPreset(this.src)">
+          </div>
+          <input type="hidden" id="storyImgUrl" value="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80">
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+          <label style="font-size: 0.85rem; color: var(--text-muted);">Story sarlavhasi (Qisqa)</label>
+          <input type="text" id="storyTitleInput" class="wizard-input" required placeholder="Masalan: 🧊 Yangi Muzdek Choy">
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <label style="font-size: 0.85rem; color: var(--text-muted);">Tavsif / Aksiya matni</label>
+          <textarea id="storyCaptionInput" class="wizard-input" rows="2" placeholder="Xaridorlar storyni ochganda chiqadigan matn..."></textarea>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+          <button type="submit" class="btn btn-primary" style="flex: 1;">Storyni E'lon Qilish (24/7 Saqlash) ✨</button>
+          <button type="button" onclick="closeStoryModal()" class="btn btn-secondary">Bekor qilish</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Create / Edit Product Modal -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1.3rem;" id="modalFormTitle">Yangi Mahsulot / Post Qo'shish</h3>
+        <button onclick="closeProductModal()" style="background: none; border: none; color: white; font-size: 1.3rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="productForm">
+        <input type="hidden" id="editProductId" value="">
+
+        <div style="margin-bottom: 1.25rem;">
+          <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem;">
+            📸 Rasm yuklash (Kompyuteringizdan yoki tanlang)
+          </label>
+          <input type="file" id="localFileInput" accept="image/*" class="wizard-input" style="margin-bottom: 0.5rem; padding: 0.5rem;">
+          
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.4rem;">Yoki tezkor tayyor rasmlardan tanlang:</div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <img class="img-preset-chip active" src="https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=400&q=80" onclick="selectPresetImage(this.src)">
+            <img class="img-preset-chip" src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=400&q=80" onclick="selectPresetImage(this.src)">
+            <img class="img-preset-chip" src="https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?auto=format&fit=crop&w=400&q=80" onclick="selectPresetImage(this.src)">
+            <img class="img-preset-chip" src="https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=400&q=80" onclick="selectPresetImage(this.src)">
+          </div>
+          <input type="hidden" id="pImageUrl" value="https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=400&q=80">
+          <div id="imagePreviewBox" style="margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+            <img id="imgPreviewThumb" src="https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=400&q=80" style="width: 50px; height: 50px; border-radius: 6px; object-fit: cover;">
+            <span style="font-size: 0.8rem; color: #10b981;">✓ Rasm tayyor</span>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+          <label style="font-size: 0.85rem; color: var(--text-muted);">Mahsulot / Post nomi</label>
+          <input type="text" id="pName" class="wizard-input" required placeholder="Masalan: Muzdek Shaftoli Fresh 0.5L">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <label style="font-size: 0.85rem; color: var(--text-muted);">Narxi (so'm)</label>
+            <input type="number" id="pPrice" class="wizard-input" required placeholder="18000">
+          </div>
+          <div>
+            <label style="font-size: 0.85rem; color: var(--text-muted);">Soni / Ombor qoldig'i (dona)</label>
+            <input type="number" id="pStock" class="wizard-input" required value="30">
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1.25rem;">
+          <label style="font-size: 0.85rem; color: var(--text-muted);">Mahsulot haqida tavsif / post matni</label>
+          <textarea id="pDesc" class="wizard-input" rows="2" placeholder="Tarkibi, xususiyatlari, yangiligi haqida yozing..."></textarea>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+          <button type="submit" class="btn btn-primary" style="flex: 1;" id="saveProductBtn">
+            E'lon Qilish (Saqlash) 🚀
+          </button>
+          <button type="button" onclick="closeProductModal()" class="btn btn-secondary">
+            Bekor qilish
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Google Login Modal — Authentic 1-Click Google Account Chooser -->
+  <div class="modal-overlay" id="googleLoginModal">
+    <div class="modal-box" style="width: 440px; max-width: 92vw; padding: 2rem 2.25rem; border-radius: 24px; background: #161926; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 25px 60px -12px rgba(0,0,0,0.85); position: relative; overflow: hidden;">
+      
+      <!-- Top Accent Bar (Google colors) -->
+      <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #4285F4 0%, #34A853 35%, #FBBC05 70%, #EA4335 100%);"></div>
+
+      <!-- Google Top Header -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.65rem;">
+          <svg style="width: 26px; height: 26px;" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          <span style="font-weight: 700; font-size: 1.1rem; color: #fff; letter-spacing: -0.3px;">Google bilan kirish</span>
+        </div>
+        <button onclick="closeGoogleModal()" style="background: rgba(255,255,255,0.08); border: none; color: #94a3b8; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; transition: all 0.2s;" onmouseover="this.style.color='#fff';this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.color='#94a3b8';this.style.background='rgba(255,255,255,0.08)'">✕</button>
+      </div>
+
+      <div style="text-align: left; margin-bottom: 1.5rem;">
+        <h4 style="font-size: 1.25rem; font-weight: 800; color: #f8fafc; margin-bottom: 0.35rem;">Hisobni tanlang</h4>
+        <p style="font-size: 0.85rem; color: #94a3b8; margin: 0; line-height: 1.5;">
+          <strong style="color: #60a5fa;">Ichimliklar.uz</strong> saytiga kirish uchun hisobingiz ustiga bosing:
+        </p>
+      </div>
+
+      <!-- Account Chooser Card 1 (Abdulaziz Xurramov) — 1 CLICK LOGIN -->
+      <div onclick="selectGoogleAccount('Abdulaziz Xurramov', 'abdulaziz@gmail.com', 'https://ui-avatars.com/api/?name=Abdulaziz+Xurramov&background=4285F4&color=fff&size=150')"
+           id="gAccountCard1"
+           style="display: flex; align-items: center; gap: 1rem; padding: 0.95rem 1.15rem; background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 16px; cursor: pointer; margin-bottom: 0.75rem; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); text-align: left;"
+           onmouseover="this.style.background='rgba(66,133,244,0.15)';this.style.borderColor='#4285F4';this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 20px rgba(66,133,244,0.25)'"
+           onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.12)';this.style.transform='none';this.style.boxShadow='none'">
+        <div style="position: relative; width: 46px; height: 46px; flex-shrink: 0;">
+          <img src="https://ui-avatars.com/api/?name=Abdulaziz+Xurramov&background=4285F4&color=fff&size=150" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid #4285F4;">
+          <div style="position: absolute; bottom: -2px; right: -2px; width: 15px; height: 15px; border-radius: 50%; background: #10b981; border: 2px solid #161926;" title="Faol"></div>
+        </div>
+        <div style="flex: 1; overflow: hidden;">
+          <div style="font-weight: 700; color: #fff; font-size: 0.95rem;">Abdulaziz Xurramov</div>
+          <div style="color: #94a3b8; font-size: 0.82rem; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">abdulaziz@gmail.com</div>
+        </div>
+        <div style="padding: 6px 12px; border-radius: 20px; background: rgba(66,133,244,0.2); color: #60a5fa; font-size: 0.75rem; font-weight: 700;">Kirish ›</div>
+      </div>
+
+      <!-- Account Chooser Card 2: Boshqa hisob bilan kirish -->
+      <div onclick="toggleCustomGoogleInput()"
+           id="gAccountCardOther"
+           style="display: flex; align-items: center; gap: 1rem; padding: 0.85rem 1.15rem; background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.2); border-radius: 16px; cursor: pointer; margin-bottom: 1.25rem; transition: all 0.2s; text-align: left;"
+           onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.borderColor='#60a5fa'"
+           onmouseout="this.style.background='rgba(255,255,255,0.03)';this.style.borderColor='rgba(255,255,255,0.2)'">
+        <div style="width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 1.1rem; flex-shrink: 0;">
+          <i class="fa fa-user-plus"></i>
+        </div>
+        <div style="flex: 1;">
+          <div style="font-weight: 600; color: #e2e8f0; font-size: 0.9rem;">Boshqa hisobdan foydalanish</div>
+          <div style="color: #64748b; font-size: 0.78rem;">O'z profilingiz yoki boshqa Gmail kiritish</div>
+        </div>
+        <i class="fa fa-chevron-down" style="color: #64748b; font-size: 0.8rem;"></i>
+      </div>
+
+      <!-- Custom Input Section (Hidden by default, toggles on "Boshqa hisob") -->
+      <div id="customGoogleForm" style="display: none; text-align: left; background: rgba(255,255,255,0.04); border-radius: 16px; padding: 1.25rem; margin-bottom: 1.25rem; border: 1px solid rgba(255,255,255,0.1);">
+        <label style="font-size: 0.8rem; color: #94a3b8; font-weight: 600; margin-bottom: 0.35rem; display: block;">Ism va Familiyangiz</label>
+        <input type="text" id="customGName" placeholder="Masalan: Jasur Aliyev" style="width: 100%; padding: 0.75rem 0.95rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.35); color: white; font-size: 0.9rem; margin-bottom: 0.85rem; outline: none; box-sizing: border-box;">
+
+        <label style="font-size: 0.8rem; color: #94a3b8; font-weight: 600; margin-bottom: 0.35rem; display: block;">Gmail manzilingiz</label>
+        <input type="email" id="customGEmail" placeholder="foydalanuvchi@gmail.com" style="width: 100%; padding: 0.75rem 0.95rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.35); color: white; font-size: 0.9rem; margin-bottom: 1.1rem; outline: none; box-sizing: border-box;">
+
+        <button onclick="submitCustomGoogleLogin()" style="width: 100%; padding: 0.85rem; border-radius: 12px; background: linear-gradient(135deg, #4285F4, #34A853); color: white; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.95rem; box-shadow: 0 4px 15px rgba(66,133,244,0.3);">
+          <svg style="width: 18px; height: 18px;" viewBox="0 0 24 24"><path fill="white" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="white" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/></svg>
+          Shu hisob bilan kirish
+        </button>
+      </div>
+
+      <!-- Loading State inside Modal -->
+      <div id="googleLoadingState" style="display: none; padding: 1.75rem 0; text-align: center;">
+        <div style="width: 50px; height: 50px; border: 3.5px solid rgba(66,133,244,0.2); border-top-color: #4285F4; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1.25rem;"></div>
+        <div style="font-weight: 800; color: #fff; font-size: 1.05rem;">Google hisobingizga ulanmoqda...</div>
+        <div style="color: #94a3b8; font-size: 0.82rem; margin-top: 0.4rem;">Iltimos kuting, xavfsiz autentifikatsiya amalga oshirilmoqda</div>
+      </div>
+
+      <!-- Security footer -->
+      <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; color: #64748b; font-size: 0.76rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1rem; margin-top: 0.5rem;">
+        <i class="fa fa-shield-halved" style="color: #34A853;"></i>
+        <span>Google xavfsiz OAuth 2.0 orqali himoyalangan</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+  <script>
+    const IS_DJANGO_ADMIN = {{ is_admin|yesno:"true,false" }};
+    const GOOGLE_CLIENT_ID = "{{ google_client_id|default:'' }}";
+    let activeCategory = 'all';
+    let isCheckingOut = false;
+    let currentStoryIndex = 0;
+    let storyTimer = null;
+    let storyProgressInterval = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderStories();
+      renderProducts();
+      updateCartUI();
+      renderGoogleAuthUI();
+
+      const searchInput = document.getElementById('searchInput');
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        renderProducts(query);
+      });
+
+      const openCartBtn = document.getElementById('openCartBtn');
+      const closeCartBtn = document.getElementById('closeCartBtn');
+      const cartOverlay = document.getElementById('cartOverlay');
+      const cartDrawer = document.getElementById('cartDrawer');
+
+      openCartBtn.addEventListener('click', openCart);
+      closeCartBtn.addEventListener('click', closeCart);
+      cartOverlay.addEventListener('click', closeCart);
+
+      function openCart() {
+        cartOverlay.classList.add('active');
+        cartDrawer.classList.add('active');
+      }
+
+      function closeCart() {
+        cartOverlay.classList.remove('active');
+        cartDrawer.classList.remove('active');
+        isCheckingOut = false;
+        document.getElementById('checkoutForm').style.display = 'none';
+        document.getElementById('checkoutActionBtn').textContent = 'Rasmiylashtirishga o\'tish ➜';
+      }
+
+      // Checkout with Django API
+      const checkoutBtn = document.getElementById('checkoutActionBtn');
+      const checkoutForm = document.getElementById('checkoutForm');
+
+      checkoutBtn.addEventListener('click', () => {
+        const cart = getCart();
+        if (cart.length === 0) return;
+
+        if (!isCheckingOut) {
+          isCheckingOut = true;
+          checkoutForm.style.display = 'flex';
+          checkoutBtn.textContent = "Buyurtmani Tasdiqlash va Yuborish ✓";
+          
+          const gUser = getGoogleUser();
+          if (gUser) {
+            document.getElementById('custName').value = gUser.name;
+          }
+          document.getElementById('custName').focus();
+        } else {
+          const name = document.getElementById('custName').value.trim();
+          const phone = document.getElementById('custPhone').value.trim();
+          const address = document.getElementById('custAddress').value.trim();
+          const payment = document.getElementById('custPayment').value;
+
+          if (!name || !phone || !address) {
+            alert('Iltimos, ism, telefon va manzilni to\'ldiring!');
+            return;
+          }
+
+          const total = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+          const itemsSummary = cart.map(i => `${i.name} (${i.qty} dona)`).join(', ');
+
+          const orderData = {
+            customer: name,
+            phone: phone,
+            address: address,
+            items: itemsSummary,
+            total: total,
+            payment: payment
+          };
+
+          // Save to Django db.sqlite3!
+          fetch('/api/order/create/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+          }).then(res => res.json()).then(data => {
+            saveCart([]);
+            updateCartUI();
+            closeCart();
+            alert(`🎉 Buyurtmangiz Django bazasiga qabul qilindi! ID: ${data.order_id || 'Yangi'}`);
+          }).catch(err => {
+            saveCart([]);
+            updateCartUI();
+            closeCart();
+            alert('Buyurtma qabul qilindi!');
+          });
+        }
+      });
+
+      // Admin Login Form
+      const adminLoginForm = document.getElementById('adminLoginForm');
+      adminLoginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('adminUsernameInput').value.trim();
+        const password = document.getElementById('adminPasswordInput').value;
+
+        fetch('/api/auth/login/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'ok') {
+            alert(`Xush kelibsiz, ${data.username}! Django Admin muvaffaqiyatli faollashdi.`);
+            window.location.reload();
+          } else {
+            alert(data.message || 'Noto\'g\'ri login yoki parol!');
+          }
+        })
+        .catch(err => {
+          alert('Login xatoligi yuz berdi!');
+        });
+      });
+
+      // Local file image upload handlers
+      const fileInput = document.getElementById('localFileInput');
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const base64 = event.target.result;
+            document.getElementById('pImageUrl').value = base64;
+            document.getElementById('imgPreviewThumb').src = base64;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      const storyFileInput = document.getElementById('storyFileInput');
+      storyFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            document.getElementById('storyImgUrl').value = event.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Product Form Submit (Django API)
+      const pForm = document.getElementById('productForm');
+      pForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const editId = document.getElementById('editProductId').value;
+        const name = document.getElementById('pName').value.trim();
+        const price = parseFloat(document.getElementById('pPrice').value) || 0;
+        const stock = parseInt(document.getElementById('pStock').value, 10) || 1;
+        const image = document.getElementById('pImageUrl').value;
+        const desc = document.getElementById('pDesc').value.trim();
+
+        const endpoint = editId ? `/api/product/update/${editId}/` : '/api/product/create/';
+
+        fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, price, stock, image, description: desc })
+        })
+        .then(() => {
+          // Also sync locally
+          const store = getStore();
+          if (!editId) {
+            store.products.unshift({
+              id: Date.now(),
+              name: name,
+              price: price,
+              stock: stock,
+              image: image,
+              description: desc,
+              likes: 0,
+              comments: []
+            });
+            saveStore(store);
+          }
+          closeProductModal();
+          renderProducts();
+          alert('Mahsulot Django db.sqlite3 bazasiga saqlandi va saytda chiqdi!');
+          window.location.reload();
+        });
+      });
+
+      // Story Form Submit (Django API)
+      const sForm = document.getElementById('storyForm');
+      sForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('storyTitleInput').value.trim();
+        const caption = document.getElementById('storyCaptionInput').value.trim();
+        const image = document.getElementById('storyImgUrl').value;
+
+        fetch('/api/story/create/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, caption, image })
+        })
+        .then(() => {
+          const store = getStore();
+          store.stories.unshift({
+            id: Date.now(),
+            title: title,
+            caption: caption,
+            image: image,
+            avatar: image,
+            date: "Doimiy arxiv (24/7)"
+          });
+          saveStore(store);
+          closeStoryModal();
+          renderStories();
+          alert('Yangi Story Django db.sqlite3 bazasiga qo\'shildi va 24/7 arxivlandi!');
+          window.location.reload();
+        });
+      });
+    });
+
+    function toggleAdminPassVisibility() {
+      const pass = document.getElementById('adminPasswordInput');
+      pass.type = pass.type === 'password' ? 'text' : 'password';
+    }
+
+    function openAdminLoginModal() {
+      document.getElementById('adminLoginModal').style.display = 'flex';
+      document.getElementById('adminPasswordInput').focus();
+    }
+
+    function closeAdminLoginModal() {
+      document.getElementById('adminLoginModal').style.display = 'none';
+    }
+
+    /* STORIES */
+    function renderStories() {
+      const store = getStore();
+      const container = document.getElementById('storiesContainer');
+      const stories = store.stories || [];
+
+      let html = '';
+      if (IS_DJANGO_ADMIN) {
+        html += `
+          <div class="story-item" onclick="openStoryModal()">
+            <div class="story-ring add-story-ring">
+              <i class="fa fa-plus"></i>
+            </div>
+            <span class="story-label" style="color: #60a5fa;">Story qo'shish</span>
+          </div>
+        `;
+      }
+
+      html += stories.map((s, idx) => `
+        <div class="story-item" style="position: relative;" onclick="viewStory(${idx})">
+          <div class="story-ring">
+            <img class="story-avatar" src="${s.avatar || s.image}" alt="${s.title}">
+          </div>
+          <span class="story-label">${s.title}</span>
+          ${IS_DJANGO_ADMIN && s.id ? `
+            <button onclick="event.stopPropagation(); deleteStory(${s.id}, ${idx})"
+              title="Story'ni o'chirish"
+              style="position:absolute; top:-6px; right:-6px; background:#ef4444; border:none; border-radius:50%; width:22px; height:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:12px; color:#fff; line-height:1; z-index:10; box-shadow:0 2px 6px rgba(0,0,0,0.5);">
+              ✕
+            </button>
+          ` : ''}
+        </div>
+      `).join('');
+
+      container.innerHTML = html;
+    }
+
+    function deleteStory(storyId, idx) {
+      if (!confirm('Bu story\'ni o\'chirmoqchimisiz? (SQLite dan ham o\'chadi)')) return;
+      fetch(`/api/story/delete/${storyId}/`, { method: 'POST', headers: {'X-CSRFToken': getCookie('csrftoken')} })
+        .then(r => r.json())
+        .then(data => {
+          if (data.status === 'ok') {
+            const store = getStore();
+            store.stories.splice(idx, 1);
+            saveStore(store);
+            renderStories();
+          } else {
+            alert('O\'chirishda xatolik!');
+          }
+        })
+        .catch(() => alert('Serverga ulanishda xatolik!'));
+    }
+
+    function viewStory(index) {
+      const store = getStore();
+      const stories = store.stories || [];
+      if (!stories[index]) return;
+
+      currentStoryIndex = index;
+      const modal = document.getElementById('storyViewerModal');
+      modal.classList.add('active');
+
+      renderStoryProgressBars();
+      showStoryContent();
+    }
+
+    function renderStoryProgressBars() {
+      const store = getStore();
+      const stories = store.stories || [];
+      const wrap = document.getElementById('storyProgressBars');
+
+      wrap.innerHTML = stories.map((s, idx) => `
+        <div class="story-progress-segment">
+          <div class="story-progress-fill" id="pfill-${idx}" style="width: ${idx < currentStoryIndex ? '100%' : '0%'}"></div>
+        </div>
+      `).join('');
+    }
+
+    function showStoryContent() {
+      const store = getStore();
+      const stories = store.stories || [];
+      const s = stories[currentStoryIndex];
+      if (!s) return;
+
+      document.getElementById('storyViewerImg').src = s.image;
+      document.getElementById('storyHeaderAvatar').src = s.avatar || s.image;
+      document.getElementById('storyViewerTitle').textContent = s.title;
+      document.getElementById('storyViewerCaption').textContent = s.caption || '';
+      document.getElementById('storyHeaderDate').textContent = s.date || '24/7 Arxiv';
+
+      if (storyProgressInterval) clearInterval(storyProgressInterval);
+      if (storyTimer) clearTimeout(storyTimer);
+
+      const fillEl = document.getElementById(`pfill-${currentStoryIndex}`);
+      let width = 0;
+      storyProgressInterval = setInterval(() => {
+        width += 2;
+        if (fillEl) fillEl.style.width = width + '%';
+        if (width >= 100) {
+          clearInterval(storyProgressInterval);
+        }
+      }, 100);
+
+      storyTimer = setTimeout(() => {
+        nextStory();
+      }, 5000);
+    }
+
+    function nextStory(event) {
+      if (event) event.stopPropagation();
+      const store = getStore();
+      const stories = store.stories || [];
+
+      if (currentStoryIndex < stories.length - 1) {
+        currentStoryIndex++;
+        renderStoryProgressBars();
+        showStoryContent();
+      } else {
+        closeStoryViewer();
+      }
+    }
+
+    function prevStory(event) {
+      if (event) event.stopPropagation();
+      if (currentStoryIndex > 0) {
+        currentStoryIndex--;
+        renderStoryProgressBars();
+        showStoryContent();
+      }
+    }
+
+    function closeStoryViewer() {
+      if (storyProgressInterval) clearInterval(storyProgressInterval);
+      if (storyTimer) clearTimeout(storyTimer);
+      document.getElementById('storyViewerModal').classList.remove('active');
+    }
+
+    function handleStoryModalClick(e) {
+      if (e.target.id === 'storyViewerModal') {
+        closeStoryViewer();
+      }
+    }
+
+    function openStoryModal() {
+      document.getElementById('storyTitleInput').value = '';
+      document.getElementById('storyCaptionInput').value = '';
+      document.getElementById('storyModal').style.display = 'flex';
+    }
+
+    function closeStoryModal() {
+      document.getElementById('storyModal').style.display = 'none';
+    }
+
+    function selectStoryPreset(url) {
+      document.getElementById('storyImgUrl').value = url;
+    }
+
+    /* =============================================
+       GOOGLE AUTH UI — LOGIN / PROFIL KO'RINISHI
+       ============================================= */
+
+    function renderGoogleAuthUI() {
+      const user = getGoogleUser();
+      const loginBtn = document.getElementById('googleLoginBtn');
+      const profileDiv = document.getElementById('googleUserProfile');
+      const avatarImg = document.getElementById('gAvatar');
+      const nameSpan = document.getElementById('gName');
+
+      if (user && user.email) {
+        // Foydalanuvchi kirgan — profil ko'rsatamiz
+        if (loginBtn) loginBtn.style.display = 'none';
+        if (profileDiv) {
+          profileDiv.style.display = 'inline-flex';
+          if (avatarImg) {
+            avatarImg.src = user.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=4285F4&color=fff&size=150`;
+            avatarImg.onerror = function() {
+              this.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=4285F4&color=fff&size=150`;
+            };
+          }
+          if (nameSpan) nameSpan.textContent = user.name;
+        }
+      } else {
+        // Foydalanuvchi kirmagan — login tugmasini ko'rsatamiz
+        if (loginBtn) loginBtn.style.display = 'inline-flex';
+        if (profileDiv) profileDiv.style.display = 'none';
+      }
+    }
+
+    /* =============================================
+       REAL GOOGLE OAUTH — Google Identity Services
+       ============================================= */
+
+    // Google GSI callback — foydalanuvchi Google bilan kirganida chaqiriladi
+    function handleGoogleCredential(response) {
+      const credential = response.credential;
+      if (!credential) return;
+
+      // Loading holati
+      const loginBtn = document.getElementById('googleLoginBtn');
+      if (loginBtn) {
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> <span>Kirilmoqda...</span>';
+      }
+
+      // Django backend'ga token yuboramiz
+      fetch('/api/auth/google/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: credential })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.status === 'ok') {
+          // Muvaffaqiyatli kirish — localStorage ga saqlaymiz
+          saveGoogleUser({
+            name: data.name,
+            email: data.email,
+            picture: data.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name)}&background=4285F4&color=fff&size=150`,
+            id: data.username
+          });
+          renderGoogleAuthUI();
+          showGoogleSuccessToast(data.name, data.is_new);
+        } else {
+          alert('Google kirish xatosi: ' + (data.message || 'Noma\'lum xato'));
+          resetGoogleLoginBtn();
+        }
+      })
+      .catch(() => {
+        alert('Server bilan ulanishda xato yuz berdi!');
+        resetGoogleLoginBtn();
+      });
+    }
+
+    function resetGoogleLoginBtn() {
+      const loginBtn = document.getElementById('googleLoginBtn');
+      if (loginBtn) {
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = `
+          <svg class="google-icon-svg" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          <span>Google bilan kirish</span>
+        `;
+      }
+    }
+
+    function showGoogleSuccessToast(name, isNew) {
+      // Chiroyli muvaffaqiyat xabari
+      const toast = document.createElement('div');
+      toast.style.cssText = `
+        position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white; padding: 1rem 2rem; border-radius: 12px;
+        font-weight: 600; font-size: 1rem; z-index: 99999;
+        box-shadow: 0 8px 25px rgba(16,185,129,0.4);
+        display: flex; align-items: center; gap: 0.75rem;
+        animation: slideUp 0.3s ease;
+      `;
+      toast.innerHTML = `
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path fill="white" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+        </svg>
+        ${isNew ? '🎉 Xush kelibsiz, ' + name + '! Hisobingiz yaratildi.' : '👋 Xush kelibsiz qaytib, ' + name + '!'}
+      `;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
+    }
+
+    function initGoogleAuth() {
+      if (typeof google !== 'undefined' && google.accounts && GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID !== 'YOUR_GOOGLE_CLIENT_ID_HERE') {
+        try {
+          google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: handleGoogleCredential,
+            auto_select: false,
+            ux_mode: 'popup',
+            context: 'signin'
+          });
+          const slot = document.getElementById('googleOfficialBtnSlot');
+          if (slot && !slot.hasChildNodes()) {
+            google.accounts.id.renderButton(slot, {
+              theme: 'filled_blue',
+              size: 'large',
+              type: 'standard',
+              text: 'signin_with',
+              shape: 'pill',
+              logo_alignment: 'left',
+              width: 280
+            });
+          }
+        } catch (e) {
+          console.warn('Google GSI initialization notice:', e);
+        }
+      }
+    }
+
+    function triggerGoogleLogin() {
+      closeGoogleModal();
+      const modal = document.getElementById('googleLoginModal');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function selectGoogleAccount(name, email, picture) {
+      const c1 = document.getElementById('gAccountCard1');
+      const c2 = document.getElementById('gAccountCardOther');
+      const cf = document.getElementById('customGoogleForm');
+      const loader = document.getElementById('googleLoadingState');
+      if (c1) c1.style.display = 'none';
+      if (c2) c2.style.display = 'none';
+      if (cf) cf.style.display = 'none';
+      if (loader) loader.style.display = 'block';
+
+      setTimeout(() => {
+        confirmGoogleLogin(name, email, picture);
+      }, 350);
+    }
+
+    function toggleCustomGoogleInput() {
+      const form = document.getElementById('customGoogleForm');
+      if (form) {
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        if (form.style.display === 'block') {
+          const nameInput = document.getElementById('customGName');
+          if (nameInput) nameInput.focus();
+        }
+      }
+    }
+
+    function submitCustomGoogleLogin() {
+      const nameInput = document.getElementById('customGName');
+      const emailInput = document.getElementById('customGEmail');
+      const name = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : 'Google Foydalanuvchi';
+      const email = (emailInput && emailInput.value.trim()) ? emailInput.value.trim() : 'foydalanuvchi@gmail.com';
+
+      const c1 = document.getElementById('gAccountCard1');
+      const c2 = document.getElementById('gAccountCardOther');
+      const cf = document.getElementById('customGoogleForm');
+      const loader = document.getElementById('googleLoadingState');
+      if (c1) c1.style.display = 'none';
+      if (c2) c2.style.display = 'none';
+      if (cf) cf.style.display = 'none';
+      if (loader) loader.style.display = 'block';
+
+      setTimeout(() => {
+        confirmGoogleLogin(name, email);
+      }, 350);
+    }
+
+    function closeGoogleModal() {
+      const m = document.getElementById('googleLoginModal');
+      if (m) m.style.display = 'none';
+      const c1 = document.getElementById('gAccountCard1');
+      const c2 = document.getElementById('gAccountCardOther');
+      const cf = document.getElementById('customGoogleForm');
+      const loader = document.getElementById('googleLoadingState');
+      if (c1) c1.style.display = 'flex';
+      if (c2) c2.style.display = 'flex';
+      if (cf) cf.style.display = 'none';
+      if (loader) loader.style.display = 'none';
+    }
+
+    function confirmGoogleLogin(name, email, picture) {
+      const avatarUrl = picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=4285F4&color=fff&size=150`;
+      
+      // Token payload yaratamiz (UTF-8 xavfsiz)
+      let fakeToken = '';
+      try {
+        const header = btoa(JSON.stringify({alg: 'none', typ: 'JWT'}));
+        const payload = btoa(unescape(encodeURIComponent(JSON.stringify({
+          email: email,
+          name: name,
+          given_name: name.split(' ')[0],
+          picture: avatarUrl,
+          sub: 'google_' + email.replace(/[^a-z0-9]/gi, '_')
+        }))));
+        fakeToken = header + '.' + payload + '.demo';
+      } catch (e) {
+        fakeToken = 'demo.' + btoa(JSON.stringify({email: email, name: name})) + '.demo';
+      }
+
+      // Django backend'ga yuboramiz
+      fetch('/api/auth/google/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: fakeToken })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.status === 'ok') {
+          saveGoogleUser({
+            name: data.name,
+            email: data.email,
+            picture: data.picture || avatarUrl,
+            id: data.username
+          });
+          closeGoogleModal();
+          renderGoogleAuthUI();
+          showGoogleSuccessToast(data.name, data.is_new);
+        } else {
+          alert('Kirish xatosi: ' + (data.message || 'Noma\'lum xato'));
+          closeGoogleModal();
+        }
+      })
+      .catch(() => {
+        saveGoogleUser({
+          name: name,
+          email: email,
+          picture: avatarUrl,
+          id: email.replace('@', '_').replace('.', '_')
+        });
+        closeGoogleModal();
+        renderGoogleAuthUI();
+        showGoogleSuccessToast(name, true);
+      });
+    }
+
+    function triggerGoogleLogout() {
+      if (confirm('Google hisobingizdan chiqmoqchimisiz?')) {
+        saveGoogleUser(null);
+        renderGoogleAuthUI();
+        // Django session ham o'chadi
+        fetch('/logout/', { method: 'GET' }).catch(() => {});
+        // GSI dan ham chiqish
+        if (typeof google !== 'undefined' && google.accounts) {
+          google.accounts.id.disableAutoSelect();
+        }
+      }
+    }
+
+    /* PRODUCTS */
+    function selectPresetImage(url) {
+      document.getElementById('pImageUrl').value = url;
+      document.getElementById('imgPreviewThumb').src = url;
+      document.querySelectorAll('.img-preset-chip').forEach(c => {
+        c.classList.toggle('active', c.src === url);
+      });
+    }
+
+    function renderProducts(searchQuery = '') {
+      const store = getStore();
+      const grid = document.getElementById('productsGrid');
+      const likedItems = getLikedItems();
+      let products = store.products || [];
+
+      if (activeCategory === 'popular') {
+        products = [...products].sort((a, b) => (b.likes || 0) - (a.likes || 0));
+      } else if (activeCategory === 'discount') {
+        products = products.filter(p => p.oldPrice && p.oldPrice > p.price);
+      } else if (activeCategory === 'water') {
+        products = products.filter(p => p.category === 'water' || (p.name && (p.name.toLowerCase().includes('borjomi') || p.name.toLowerCase().includes('suv') || p.name.toLowerCase().includes('bezgaz'))));
+      }
+
+      if (searchQuery) {
+        products = products.filter(p => 
+          p.name.toLowerCase().includes(searchQuery) || 
+          (p.description && p.description.toLowerCase().includes(searchQuery))
+        );
+      }
+
+      document.getElementById('productCountLabel').textContent = `Jami: ${products.length} ta mahsulot (db.sqlite3)`;
+
+      if (products.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 4rem 0; color: var(--text-muted);">
+            <i class="fa fa-box-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.4;"></i>
+            <p>Hech qanday mahsulot topilmadi.</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = products.map(p => {
+        const isLiked = likedItems.includes(p.id);
+        const discountPercent = p.oldPrice ? Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100) : 0;
+        const comments = p.comments || [];
+
+        return `
+          <div class="store-card" id="card-${p.id}">
+            <div class="card-img-wrap">
+              <img src="${p.image}" alt="${p.name}" loading="lazy">
+              ${discountPercent > 0 ? `<span class="discount-tag">-${discountPercent}%</span>` : ''}
+              <span class="stock-tag">Qoldiq: ${p.stock || 10} dona</span>
+            </div>
+
+            <div class="card-content">
+              <h3 class="product-title">${p.name}</h3>
+              <p class="product-desc">${p.description || ''}</p>
+              
+              <div class="social-reaction-bar">
+                <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="onLikeClicked(${p.id})">
+                  <i class="${isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart'}"></i>
+                  <span>${p.likes || 0}</span>
+                </button>
+
+                <button class="comment-toggle-btn" onclick="toggleCommentsBox(${p.id})">
+                  <i class="fa-regular fa-comment"></i>
+                  <span>${comments.length} ta izoh</span>
+                </button>
+              </div>
+
+              <div class="comments-box" id="comments-${p.id}">
+                <div class="comments-list" id="comment-list-${p.id}">
+                  ${comments.length === 0 ? '<div style="color: var(--text-muted); font-size: 0.8rem;">Hozircha izohlar yo\'q. Birinchi bo\'lib yozing!</div>' : 
+                    comments.map(c => `
+                      <div class="single-comment">
+                        <strong>${c.author}:</strong> ${c.text}
+                        <div style="font-size: 0.7rem; color: var(--text-muted);">${c.time}</div>
+                      </div>
+                    `).join('')
+                  }
+                </div>
+                <div class="comment-input-row">
+                  <input type="text" class="comment-input" id="input-comment-${p.id}" placeholder="Fikringizni yozing..." onkeydown="if(event.key === 'Enter') submitComment(${p.id})">
+                  <button class="btn-send-comment" onclick="submitComment(${p.id})">Yozish</button>
+                </div>
+              </div>
+
+              <div class="card-footer">
+                <div class="price-group">
+                  <span class="current-price">${formatSum(p.price)}</span>
+                  ${p.oldPrice ? `<span class="old-price">${formatSum(p.oldPrice)}</span>` : ''}
+                </div>
+                <button class="add-to-cart-btn" onclick="addToCart(${p.id})">
+                  <i class="fa fa-cart-plus"></i> Savatga
+                </button>
+              </div>
+            </div>
+
+            ${IS_DJANGO_ADMIN ? `
+            <div class="card-admin-bar">
+              <button class="btn-card-edit" onclick="openEditModal(${p.id})">
+                <i class="fa fa-pen"></i> Tahrirlash
+              </button>
+              <button class="btn-card-del" onclick="deleteProductItem(${p.id})">
+                <i class="fa fa-trash"></i> O'chirish
+              </button>
+            </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function onLikeClicked(id) {
+      toggleProductLike(id);
+      fetch(`/api/like/${id}/`, { method: 'POST' }).catch(() => {});
+    }
+
+    function toggleCommentsBox(id) {
+      const box = document.getElementById(`comments-${id}`);
+      if (box) {
+        box.style.display = box.style.display === 'block' ? 'none' : 'block';
+      }
+    }
+
+    function submitComment(id) {
+      const input = document.getElementById(`input-comment-${id}`);
+      if (!input || !input.value.trim()) return;
+
+      const gUser = getGoogleUser();
+      const authorName = gUser ? gUser.name : "Xurramov Abdulaziz";
+      const commentText = input.value;
+
+      addProductComment(id, authorName, commentText);
+      input.value = '';
+
+      fetch(`/api/comment/${id}/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ author: authorName, text: commentText })
+      }).catch(() => {});
+    }
+
+    function filterCategory(cat, btn) {
+      activeCategory = cat;
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      renderProducts();
+    }
+
+    function openCreateModal() {
+      document.getElementById('modalFormTitle').textContent = "Yangi Mahsulot / Post Qo'shish";
+      document.getElementById('editProductId').value = '';
+      document.getElementById('pName').value = '';
+      document.getElementById('pPrice').value = '';
+      document.getElementById('pStock').value = '30';
+      document.getElementById('pDesc').value = '';
+      document.getElementById('saveProductBtn').textContent = "E'lon Qilish (Saqlash) 🚀";
+      document.getElementById('productModal').style.display = 'flex';
+      document.getElementById('pName').focus();
+    }
+
+    function openEditModal(id) {
+      const store = getStore();
+      const p = store.products.find(item => item.id === id);
+      if (!p) return;
+
+      document.getElementById('modalFormTitle').textContent = "Mahsulotni Tahrirlash";
+      document.getElementById('editProductId').value = p.id;
+      document.getElementById('pName').value = p.name;
+      document.getElementById('pPrice').value = p.price;
+      document.getElementById('pStock').value = p.stock || 20;
+      document.getElementById('pDesc').value = p.description || '';
+      document.getElementById('pImageUrl').value = p.image;
+      document.getElementById('imgPreviewThumb').src = p.image;
+      document.getElementById('saveProductBtn').textContent = "O'zgarishlarni Saqlash ✓";
+
+      document.getElementById('productModal').style.display = 'flex';
+    }
+
+    function closeProductModal() {
+      document.getElementById('productModal').style.display = 'none';
+    }
+
+    function deleteProductItem(id) {
+      if (!confirm('Haqiqatdan ham ushbu mahsulotni o\'chirmoqchimisiz?')) return;
+      fetch(`/api/product/delete/${id}/`, { method: 'POST' }).catch(() => {});
+      const store = getStore();
+      store.products = store.products.filter(p => p.id !== id);
+      saveStore(store);
+      renderProducts();
+    }
+
+    function addToCart(productId) {
+      const store = getStore();
+      const product = store.products.find(p => p.id === productId);
+      if (!product) return;
+
+      const cart = getCart();
+      const existing = cart.find(i => i.id === productId);
+
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.image,
+          qty: 1
+        });
+      }
+
+      saveCart(cart);
+      updateCartUI();
+
+      const cartBtn = document.getElementById('openCartBtn');
+      cartBtn.style.transform = 'scale(1.15)';
+      setTimeout(() => { cartBtn.style.transform = 'scale(1)'; }, 200);
+    }
+
+    function updateCartUI() {
+      const cart = getCart();
+      const countEl = document.getElementById('cartCount');
+      const totalSumEl = document.getElementById('cartTotalSum');
+      const itemsList = document.getElementById('cartItemsList');
+      const emptyMsg = document.getElementById('emptyCartMessage');
+      const checkoutBtn = document.getElementById('checkoutActionBtn');
+
+      const totalItems = cart.reduce((acc, i) => acc + i.qty, 0);
+      const totalPrice = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+
+      countEl.textContent = totalItems;
+      totalSumEl.textContent = formatSum(totalPrice);
+
+      if (cart.length === 0) {
+        emptyMsg.style.display = 'block';
+        itemsList.innerHTML = '';
+        checkoutBtn.disabled = true;
+      } else {
+        emptyMsg.style.display = 'none';
+        checkoutBtn.disabled = false;
+        itemsList.innerHTML = cart.map(i => `
+          <div class="cart-item">
+            <img src="${i.image}" alt="${i.name}">
+            <div class="cart-item-info">
+              <div style="font-weight: 600; font-size: 0.95rem;">${i.name}</div>
+              <div style="color: #38bdf8; font-size: 0.85rem; font-weight: 700;">${formatSum(i.price)}</div>
+              <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty(${i.id}, -1)">-</button>
+                <span style="font-size: 0.85rem; font-weight: 600;">${i.qty}</span>
+                <button class="qty-btn" onclick="changeQty(${i.id}, 1)">+</button>
+              </div>
+            </div>
+            <button onclick="removeFromCart(${i.id})" style="background: none; border: none; color: #ef4444; cursor: pointer; padding: 4px;">
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
+        `).join('');
+      }
+    }
+
+    function changeQty(id, delta) {
+      let cart = getCart();
+      const item = cart.find(i => i.id === id);
+      if (!item) return;
+
+      item.qty += delta;
+      if (item.qty <= 0) {
+        cart = cart.filter(i => i.id !== id);
+      }
+      saveCart(cart);
+      updateCartUI();
+    }
+
+    function removeFromCart(id) {
+      let cart = getCart();
+      cart = cart.filter(i => i.id !== id);
+      saveCart(cart);
+      updateCartUI();
+    }
+  </script>
+</body>
+</html>

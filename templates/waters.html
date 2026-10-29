@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💧 Suvlar Bo'limi — Borjomi & Gazsiz Tog' Suvlari | Ichimliklar.uz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    :root {
+      --water-primary: #06b6d4;
+      --water-primary-dark: #0891b2;
+      --water-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #6366f1 100%);
+      --borjomi-green: #10b981;
+      --still-blue: #38bdf8;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 0%, #0f172a 0%, #090d16 100%);
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    /* Floating Bubbles Background Animation */
+    .bubble-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -60px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(56, 189, 248, 0.4), rgba(6, 182, 212, 0.05));
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      animation: floatUp 14s infinite ease-in;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(0.8); opacity: 0; }
+      20% { opacity: 0.6; }
+      80% { opacity: 0.6; }
+      100% { transform: translateY(-120vh) scale(1.2); opacity: 0; }
+    }
+
+    .header-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+      padding: 0.9rem 0;
+    }
+
+    .header-flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-water {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: white;
+    }
+
+    .brand-icon-drop {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: var(--water-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 8px 20px rgba(6, 182, 212, 0.35);
+    }
+
+    .nav-links-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .water-hero {
+      text-align: center;
+      padding: 4rem 1rem 3rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.25rem;
+      border-radius: 999px;
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      color: #38bdf8;
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.2);
+    }
+
+    .water-hero h1 {
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #ffffff 30%, #38bdf8 70%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .water-hero p {
+      font-size: 1.15rem;
+      color: #94a3b8;
+      max-width: 680px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.6;
+    }
+
+    /* Cards Grid */
+    .water-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 2rem;
+      max-width: 1100px;
+      margin: 0 auto 4rem;
+      padding: 0 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .water-card {
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(20px);
+      border-radius: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .water-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 25px 50px -12px rgba(6, 182, 212, 0.25);
+    }
+
+    .water-card.borjomi-theme {
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .water-card.borjomi-theme:hover {
+      border-color: #10b981;
+      box-shadow: 0 25px 50px -12px rgba(16, 185, 129, 0.3);
+    }
+
+    .water-card.still-theme {
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+
+    .water-card.still-theme:hover {
+      border-color: #38bdf8;
+      box-shadow: 0 25px 50px -12px rgba(56, 189, 248, 0.3);
+    }
+
+    .card-top-tag {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      z-index: 2;
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tag-borjomi {
+      background: rgba(16, 185, 129, 0.9);
+      color: white;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
+    .tag-still {
+      background: rgba(56, 189, 248, 0.9);
+      color: #042f2e;
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4);
+    }
+
+    .water-img-box {
+      height: 280px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.4) 100%);
+    }
+
+    .water-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .water-card:hover .water-img-box img {
+      transform: scale(1.05);
+    }
+
+    .water-card-content {
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .stock-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .water-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #fff;
+      margin: 0 0 0.5rem;
+      line-height: 1.3;
+    }
+
+    .water-desc {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      margin-bottom: 1.25rem;
+    }
+
+    /* Mineral Specs Pill List */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 1rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .spec-item {
+      font-size: 0.8rem;
+    }
+
+    .spec-label {
+      color: #64748b;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .spec-val {
+      color: #e2e8f0;
+      font-weight: 700;
+    }
+
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      margin-top: auto;
+    }
+
+    .price-current {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .price-old {
+      font-size: 1.1rem;
+      color: #64748b;
+      text-decoration: line-through;
+    }
+
+    .btn-water-order {
+      width: 100%;
+      padding: 0.95rem;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      transition: all 0.2s;
+    }
+
+    .btn-borjomi {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-borjomi:hover {
+      box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .btn-still {
+      background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+      color: white;
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.35);
+    }
+
+    .btn-still:hover {
+      box-shadow: 0 10px 25px rgba(6, 182, 212, 0.5);
+      transform: translateY(-2px);
+    }
+
+    /* Comparison Table Section */
+    .compare-section {
+      max-width: 900px;
+      margin: 0 auto 5rem;
+      padding: 0 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .compare-table th {
+      padding: 1.25rem 1rem;
+      text-align: left;
+      font-size: 0.95rem;
+      background: rgba(255, 255, 255, 0.05);
+      color: #38bdf8;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .compare-table td {
+      padding: 1.1rem 1rem;
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .compare-table tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    @media (max-width: 768px) {
+      .water-hero h1 { font-size: 2.2rem; }
+      .water-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Animated Bubbles Background -->
+  <div class="bubble-bg">
+    <div class="bubble" style="width: 40px; height: 40px; left: 10%; animation-duration: 12s; animation-delay: 0s;"></div>
+    <div class="bubble" style="width: 70px; height: 70px; left: 25%; animation-duration: 16s; animation-delay: 2s;"></div>
+    <div class="bubble" style="width: 30px; height: 30px; left: 45%; animation-duration: 10s; animation-delay: 4s;"></div>
+    <div class="bubble" style="width: 60px; height: 60px; left: 70%; animation-duration: 14s; animation-delay: 1s;"></div>
+    <div class="bubble" style="width: 50px; height: 50px; left: 88%; animation-duration: 18s; animation-delay: 3s;"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header-nav">
+    <div class="container header-flex">
+      <a href="/waters/" class="brand-water">
+        <div class="brand-icon-drop">💧</div>
+        <div>
+          <div style="font-weight: 800; font-size: 1.15rem; letter-spacing: -0.3px;">Ichimliklar.uz</div>
+          <div style="font-size: 0.72rem; color: #38bdf8; font-weight: 600;">Maxsus Suvlar App & Bo'limi</div>
+        </div>
+      </a>
+
+      <div class="nav-links-right">
+        <a href="/store/" class="btn btn-secondary" style="padding: 0.55rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; text-decoration: none; border-radius: 12px;">
+          <i class="fa fa-store"></i> Asosiy Do'kon
+        </a>
+
+        <!-- Cart button with live counter -->
+        <button class="cart-btn" id="openCartBtn" onclick="window.location.href='/store/'" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.55rem 1.1rem; border-radius: 12px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; cursor: pointer;">
+          <i class="fa fa-shopping-cart"></i>
+          <span style="font-size: 0.85rem; font-weight: 700;">Savatcha</span>
+          <span class="cart-badge" id="cartCount" style="position: static; transform: none; background: #06b6d4; color: white;">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="water-hero">
+    <div class="hero-badge">
+      <i class="fa fa-sparkles"></i> ALOHIDA SUVLAR APP • 100% TABIIY SHIFOBAXSH SUVI
+    </div>
+    <h1>Borjomi & Toza Gazsiz Suvlar</h1>
+    <p>
+      Gruziyaning afsonaviy vulqon mineral suvi <strong>Borjomi</strong> va Chotqol tog' buloqlaridan olingan <strong>kristaldek toza gazsiz suv</strong> — har biri 50 donadan zaxirada mavjud!
+    </p>
+
+    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+      <a href="#waterCards" class="btn btn-primary" style="padding: 0.85rem 1.75rem; border-radius: 14px; font-weight: 700; background: var(--water-gradient); text-decoration: none;">
+        <i class="fa fa-bottle-water"></i> Suvlarni Tanlash
+      </a>
+      <a href="/store/" class="btn btn-secondary" style="padding: 0.85rem 1.75rem; border-radius: 14px; font-weight: 700; text-decoration: none;">
+        <i class="fa fa-arrow-left"></i> Barcha Ichimliklar Katalogi
+      </a>
+    </div>
+  </section>
+
+  <!-- 2 Dedicated Water Products Grid (50 ta Borjomi, 50 ta Bezgaz) -->
+  <main class="water-grid" id="waterCards">
+    
+    <!-- CARD 1: BORJOMI -->
+    <div class="water-card borjomi-theme">
+      <div class="card-top-tag tag-borjomi">
+        <i class="fa fa-fire"></i> Shifobaxsh Gazlangan
+      </div>
+      <div class="water-img-box">
+        <img src="https://images.unsplash.com/photo-1559839914-1b311394b986?auto=format&fit=crop&w=600&q=80" alt="Borjomi Suvi">
+      </div>
+      <div class="water-card-content">
+        <div class="stock-pill">
+          <i class="fa fa-boxes-stacked"></i> Omborda: <strong>50 dona</strong> mavjud
+        </div>
+        <h3 class="water-title">Borjomi Tabiiy Mineral Gazlangan Suv 0.5L</h3>
+        <p class="water-desc">
+          Gruziyaning tabiiy vulqon kelib chiqishiga ega mashhur mineral gazlangan suvi. 60 dan ortiq minerallarga boy, hazm qilishni yaxshilaydi va tanani energiya bilan boyitadi. 0.5L shisha idishda.
+        </p>
+
+        <div class="specs-grid">
+          <div class="spec-item">
+            <span class="spec-label">Kelib chiqishi</span>
+            <span class="spec-val">Gruziya (Borjomi)</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Minerallashuv</span>
+            <span class="spec-val">5.0 – 7.5 g/L</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Suv turi</span>
+            <span class="spec-val" style="color: #34d399;">Gazlangan mineral</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">pH ko'rsatkich</span>
+            <span class="spec-val">6.5 pH</span>
+          </div>
+        </div>
+
+        <div class="price-row">
+          <div class="price-current">16 000 so'm</div>
+          <div class="price-old">19 000 so'm</div>
+          <span style="background: rgba(16, 185, 129, 0.2); color: #34d399; font-weight: 800; font-size: 0.8rem; padding: 3px 8px; border-radius: 6px;">-15%</span>
+        </div>
+
+        <button class="btn-water-order btn-borjomi" onclick="addWaterToCart(7, 'Borjomi Tabiiy Mineral Gazlangan Suv 0.5L', 16000, 'https://images.unsplash.com/photo-1559839914-1b311394b986?auto=format&fit=crop&w=600&q=80')">
+          <i class="fa fa-cart-plus"></i> Savatchaga Qo'shish (50 dona zaxira)
+        </button>
+      </div>
+    </div>
+
+    <!-- CARD 2: BEZGAZ / GAZSIZ TOZA SUV -->
+    <div class="water-card still-theme">
+      <div class="card-top-tag tag-still">
+        <i class="fa fa-snowflake"></i> Toza Gazsiz (Bezgaz)
+      </div>
+      <div class="water-img-box">
+        <img src="https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=600&q=80" alt="Tog' Chashmasi Gazsiz Suv">
+      </div>
+      <div class="water-card-content">
+        <div class="stock-pill" style="background: rgba(56, 189, 248, 0.15); border-color: rgba(56, 189, 248, 0.3); color: #38bdf8;">
+          <i class="fa fa-boxes-stacked"></i> Omborda: <strong>50 dona</strong> mavjud
+        </div>
+        <h3 class="water-title">Tog‘ Chashmasi Toza Gazsiz Suv (Bezgaz) 1.0L</h3>
+        <p class="water-desc">
+          Tog' buloqlarining chuqur qatlamlaridan olingan toza, yumshoq va kristaldek tiniq gazsiz (bezgaz) tabiiy ichimlik suvi. Kundalik chanqoqni bosish va sport uchun juda qulay. 1.0L.
+        </p>
+
+        <div class="specs-grid">
+          <div class="spec-item">
+            <span class="spec-label">Kelib chiqishi</span>
+            <span class="spec-val">Chotqol tog' bulog'i</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Minerallashuv</span>
+            <span class="spec-val">0.2 – 0.35 g/L</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Suv turi</span>
+            <span class="spec-val" style="color: #38bdf8;">Gazsiz (Bezgaz)</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">pH ko'rsatkich</span>
+            <span class="spec-val">7.4 pH</span>
+          </div>
+        </div>
+
+        <div class="price-row">
+          <div class="price-current">5 000 so'm</div>
+          <div class="price-old">7 000 so'm</div>
+          <span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; font-weight: 800; font-size: 0.8rem; padding: 3px 8px; border-radius: 6px;">-28%</span>
+        </div>
+
+        <button class="btn-water-order btn-still" onclick="addWaterToCart(8, 'Tog‘ Chashmasi Toza Gazsiz Suv (Bezgaz) 1.0L', 5000, 'https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=600&q=80')">
+          <i class="fa fa-cart-plus"></i> Savatchaga Qo'shish (50 dona zaxira)
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Comparison Section -->
+  <section class="compare-section">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <h3 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem;">📊 Qaysi suvni tanlash kerak?</h3>
+      <p style="color: #94a3b8; margin: 0;">Borjomi mineral gazlangan va Tog' Chashmasi gazsiz suvlarining taqqoslanishi</p>
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Ko'rsatkich</th>
+          <th style="color: #34d399;">Borjomi (Gazlangan)</th>
+          <th style="color: #38bdf8;">Tog' Chashmasi (Gazsiz / Bezgaz)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Ombordagi miqdor</strong></td>
+          <td><strong style="color: #34d399;">50 dona</strong></td>
+          <td><strong style="color: #38bdf8;">50 dona</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Gaz holati</strong></td>
+          <td>Tabiiy mineral gazli</td>
+          <td>Mutlaqo gazsiz (Bezgaz)</td>
+        </tr>
+        <tr>
+          <td><strong>Foydasi</strong></td>
+          <td>Oshqozon, jigar va hazm faoliyatini tiklaydi</td>
+          <td>Organizm hujayralarini tozalaydi, chanqoqni qondiradi</td>
+        </tr>
+        <tr>
+          <td><strong>Kimlar uchun</strong></td>
+          <td>Ovqatdan so'ng, minerallarni tiklash uchun</td>
+          <td>Har kuni ichish, bolalar va sportchilar uchun</td>
+        </tr>
+        <tr>
+          <td><strong>Hajmi & Idishi</strong></td>
+          <td>0.5 litr (Klassik yashil shisha)</td>
+          <td>1.0 litr (Qulay ekologik butilka)</td>
+        </tr>
+        <tr>
+          <td><strong>Narxi</strong></td>
+          <td><strong>16 000 so'm</strong></td>
+          <td><strong>5 000 so'm</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Footer -->
+  <footer style="text-align: center; padding: 2.5rem 1rem; border-top: 1px solid rgba(255,255,255,0.08); color: #64748b; font-size: 0.85rem;">
+    <p>© 2026 Ichimliklar.uz • Do'kon va Maxsus Suvlar Bo'limi. Barcha huquqlar himoyalangan.</p>
+  </footer>
+
+  <!-- Script for Cart and Notification -->
+  <script src="/static/app.js"></script>
+  <script>
+    function updateCartCount() {
+      const cart = getCart();
+      const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const el = document.getElementById('cartCount');
+      if (el) el.textContent = total;
+    }
+
+    function addWaterToCart(id, name, price, image) {
+      const cart = getCart();
+      const existing = cart.find(i => i.id === id);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({ id, name, price, image, quantity: 1 });
+      }
+      saveCart(cart);
+      updateCartCount();
+
+      // Show toast
+      const toast = document.createElement('div');
+      toast.style.cssText = `
+        position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+        background: linear-gradient(135deg, #06b6d4, #3b82f6);
+        color: white; padding: 0.9rem 1.8rem; border-radius: 12px;
+        font-weight: 700; font-size: 0.95rem; z-index: 99999;
+        box-shadow: 0 10px 30px rgba(6, 182, 212, 0.4);
+        display: flex; align-items: center; gap: 0.6rem;
+        animation: slideUp 0.3s ease;
+      `;
+      toast.innerHTML = `💧 <strong>${name}</strong> savatchaga qo'shildi!`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateCartCount();
+    });
+  </script>
+</body>
+</html>
