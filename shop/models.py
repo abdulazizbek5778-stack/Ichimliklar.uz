@@ -5,7 +5,7 @@ class StoreConfig(models.Model):
     name = models.CharField(max_length=255, default="Chashma Drinks", verbose_name="Do'kon nomi")
     slug = models.SlugField(default="chashma-drinks", verbose_name="Slug")
     icon = models.CharField(max_length=50, default="🥤", verbose_name="Belgi (Icon)")
-    phone = models.CharField(max_length=100, default="+998 90 123-45-67", verbose_name="Telefon")
+    phone = models.CharField(max_length=100, default="+998 91 959-57-78", verbose_name="Telefon")
     address = models.CharField(max_length=255, default="Toshkent shahri, Chilonzor tumani", verbose_name="Manzil")
     banner_text = models.TextField(default="Yangi mavsum aksiyasi! Barcha salqin ichimliklarga 15% chegirma!", verbose_name="Aksiya banner matni")
     tg_bot = models.CharField(max_length=100, default="@chashma_drinks_bot", verbose_name="Telegram Bot")

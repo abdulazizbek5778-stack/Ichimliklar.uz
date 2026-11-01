@@ -24,7 +24,7 @@ def get_or_create_config():
             name="Chashma Drinks",
             slug="chashma-drinks",
             icon="🥤",
-            phone="+998 90 123-45-67",
+            phone="+998 91 959-57-78",
             banner_text="Yangi mavsum aksiyasi! Barcha salqin ichimliklarga 15% chegirma!"
         )
     return config

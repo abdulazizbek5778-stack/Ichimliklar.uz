@@ -8,7 +8,7 @@ const DEFAULT_STORE = {
   slug: "chashma-drinks",
   category: "drinks",
   icon: "🥤",
-  phone: "+998 90 123-45-67",
+  phone: "+998 91 959-57-78",
   address: "Toshkent shahri, Chilonzor tumani",
   currency: "so'm",
   tgBot: "@chashma_drinks_bot",
