@@ -264,11 +264,30 @@ def api_create_story(request):
 
 @csrf_exempt
 def api_delete_story(request, story_id):
-    if request.method == 'POST':
-        story = get_object_or_404(Story, id=story_id)
-        story.delete()
-        return JsonResponse({'status': 'ok'})
-    return JsonResponse({'status': 'error'}, status=400)
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': "Faqat POST so'rovi"}, status=405)
+
+    story = Story.objects.filter(id=story_id).first()
+
+    # Eski versiyada story id sifatida Date.now() saqlangan bo'lishi mumkin.
+    # Bunday holatda sarlavha bo'yicha topib o'chiramiz.
+    if story is None:
+        try:
+            data = json.loads(request.body or '{}')
+        except (ValueError, TypeError):
+            data = {}
+        title = (data.get('title') or '').strip()
+        if title:
+            story = Story.objects.filter(title=title).order_by('-created_at').first()
+
+    if story is None:
+        return JsonResponse(
+            {'status': 'error', 'message': 'Story bazadan topilmadi.'},
+            status=404,
+        )
+
+    story.delete()
+    return JsonResponse({'status': 'ok'})
 
 @csrf_exempt
 def api_create_order(request):

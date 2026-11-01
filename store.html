@@ -1257,10 +1257,17 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ title, caption, image })
         })
-        .then(() => {
+        .then(r => r.json())
+        .then(data => {
+          if (data.status !== 'ok') {
+            alert('Story saqlashda xatolik!');
+            return;
+          }
           const store = getStore();
           store.stories.unshift({
-            id: Date.now(),
+            // MUHIM: server qaytargan haqiqiy id ishlatiladi (Date.now() emas),
+            // aks holda o'chirishda /api/story/delete/<id>/ 404 qaytaradi.
+            id: data.story_id,
             title: title,
             caption: caption,
             image: image,
@@ -1270,9 +1277,10 @@
           saveStore(store);
           closeStoryModal();
           renderStories();
-          alert('Yangi Story Django db.sqlite3 bazasiga qo\'shildi va 24/7 arxivlandi!');
+          alert('Yangi Story Django bazasiga qo\'shildi va 24/7 arxivlandi!');
           window.location.reload();
-        });
+        })
+        .catch(() => alert('Serverga ulanishda xatolik!'));
       });
     });
 
@@ -1329,17 +1337,33 @@
 
     function deleteStory(storyId, idx) {
       if (!confirm('Bu story\'ni o\'chirmoqchimisiz? (SQLite dan ham o\'chadi)')) return;
-      fetch(`/api/story/delete/${storyId}/`, { method: 'POST', headers: {'X-CSRFToken': getCookie('csrftoken')} })
-        .then(r => r.json())
-        .then(data => {
-          if (data.status === 'ok') {
-            const store = getStore();
-            store.stories.splice(idx, 1);
-            saveStore(store);
-            renderStories();
-          } else {
-            alert('O\'chirishda xatolik!');
+      const current = getStore();
+      const storyTitle = (current.stories[idx] || {}).title || '';
+
+      fetch(`/api/story/delete/${storyId}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        // Eski (noto'g'ri id bilan saqlangan) storylar uchun zaxira: sarlavha bo'yicha
+        body: JSON.stringify({ title: storyTitle })
+      })
+        .then(async r => {
+          let data = {};
+          try { data = await r.json(); } catch (e) { data = {}; }
+          return { ok: r.ok, status: r.status, data };
+        })
+        .then(({ ok, status, data }) => {
+          // 404 = baza allaqachon tozalangan (masalan, deploydan keyin) — lokal ro'yxatdan ham olib tashlaymiz.
+          if (!ok && status !== 404) {
+            alert(data.message || 'O\'chirishda xatolik! Sahifani yangilab (F5) qayta urinib ko\'ring.');
+            return;
           }
+          const store = getStore();
+          store.stories.splice(idx, 1);
+          saveStore(store);
+          renderStories();
         })
         .catch(() => alert('Serverga ulanishda xatolik!'));
     }
