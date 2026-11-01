@@ -8,6 +8,9 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('dashboard.html', views.dashboard_view, name='dashboard_html'),
     path('index.html', views.home_view, name='index_html'),
+
+    # Monitoring / keep-alive
+    path('healthz/', views.health_view, name='health'),
     
     # Auth
     path('api/auth/login/', views.api_admin_login, name='api_admin_login'),

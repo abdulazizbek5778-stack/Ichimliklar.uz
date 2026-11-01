@@ -14,5 +14,5 @@ jobs:
       - name: Saytga so'rov yuborish
         run: |
           curl --fail --silent --show-error --max-time 60 \
-            https://ichimliklar-uz.onrender.com/ > /dev/null
-          echo "Sayt javob berdi ✅"
+            https://ichimliklar-uz.onrender.com/healthz/ | tee /dev/stderr | grep -q '"status": *"ok"'
+          echo "Sayt va baza javob berdi ✅"

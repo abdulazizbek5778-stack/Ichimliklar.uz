@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.db import connection
 import json
 
 # Google OAuth token verification
@@ -300,3 +301,27 @@ def api_update_order_status(request, order_id):
         order.save()
         return JsonResponse({'status': 'ok'})
     return JsonResponse({'status': 'error'}, status=400)
+
+
+def health_view(request):
+    """Sayt va baza holati (uptime monitoring / keep-alive uchun)."""
+    try:
+        data = {
+            'status': 'ok',
+            'database': connection.vendor,
+            'products': Product.objects.count(),
+            'orders': Order.objects.count(),
+            'waters': None,
+            'debug': settings.DEBUG,
+        }
+        try:
+            from waters.models import WaterProduct
+            data['waters'] = WaterProduct.objects.count()
+        except Exception:
+            pass
+        return JsonResponse(data)
+    except Exception as exc:
+        return JsonResponse(
+            {'status': 'error', 'message': str(exc)},
+            status=500,
+        )
