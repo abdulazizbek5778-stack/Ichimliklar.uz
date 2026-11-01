@@ -805,6 +805,30 @@ footer {
   box-shadow: none;
 }
 
+.story-delete-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: white;
+  border: 2px solid #090d16;
+  font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.2s, background 0.2s;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.5);
+}
+.story-delete-badge:hover {
+  transform: scale(1.15);
+  background: #dc2626;
+}
+
 .story-avatar {
   width: 100%;
   height: 100%;

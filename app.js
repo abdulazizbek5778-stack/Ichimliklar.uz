@@ -80,6 +80,7 @@ const DEFAULT_STORE = {
         { id: 1, author: "Davron", text: "Juda toza va ta'mi shirin gazsiz suv, har kuni olamiz!", time: "2 soat oldin" }
       ]
     },
+    {
       id: 1,
       name: "Tog' Chashmasi Mineral Suv 1.5L",
       category: "drinks",
@@ -324,3 +325,151 @@ function addProductComment(productId, author, text) {
   }
   return true;
 }
+
+/* ============================================================
+   LANDING PAGE — "Do'koningizni sozlang" jonli demo (index.html)
+   Faqat index sahifasida ishlaydi; boshqa sahifalarda hech narsa qilmaydi.
+   ============================================================ */
+(function initLandingDemo() {
+  const nameInput = document.getElementById('storeNameInput');
+  if (!nameInput) return;
+
+  const phoneInput = document.getElementById('storePhoneInput');
+  const chips = Array.from(document.querySelectorAll('#categoryChips .chip'));
+  const slugEl = document.getElementById('previewSlug');
+  const iconEl = document.getElementById('mockupIcon');
+  const titleEl = document.getElementById('mockupTitle');
+  const cartEl = document.getElementById('mockupCartCount');
+  const productsEl = document.getElementById('mockupProducts');
+  const launchBtn = document.getElementById('saveAndLaunchBtn');
+
+  const CATEGORIES = {
+    drinks: {
+      icon: '🥤',
+      items: [
+        { emoji: '💧', name: "Tog' Chashmasi 1.5L", price: 6000 },
+        { emoji: '🍋', name: 'Moxito Fresh 0.5L', price: 18000 },
+        { emoji: '🍎', name: 'Tabiiy Anor Sharbati 1L', price: 24000 },
+        { emoji: '☕', name: 'Muzli Qahva Latte', price: 22000 }
+      ]
+    },
+    clothing: {
+      icon: '👗',
+      items: [
+        { emoji: '👕', name: 'Klasik Ko\'ylak', price: 189000 },
+        { emoji: '👖', name: 'Jins Shim', price: 249000 },
+        { emoji: '👗', name: 'Yozgi Ko\'ylak', price: 320000 },
+        { emoji: '🧥', name: 'Demi-mavsum Kurtka', price: 450000 }
+      ]
+    },
+    food: {
+      icon: '🍔',
+      items: [
+        { emoji: '🍔', name: 'Klassik Burger', price: 35000 },
+        { emoji: '🍕', name: 'Pepperoni Pitsa', price: 65000 },
+        { emoji: '🌮', name: 'Lavash', price: 28000 },
+        { emoji: '🍟', name: 'Fri Kartoshka', price: 18000 }
+      ]
+    },
+    electronics: {
+      icon: '📱',
+      items: [
+        { emoji: '📱', name: 'Smartfon Pro', price: 12900000 },
+        { emoji: '🎧', name: 'Simsiz Quloqchin', price: 1450000 },
+        { emoji: '⌚', name: 'Smart Watch', price: 890000 },
+        { emoji: '💻', name: 'Noutbuk Air', price: 9500000 }
+      ]
+    }
+  };
+
+  let activeCategory = 'drinks';
+
+  function money(n) {
+    return new Intl.NumberFormat('uz-UZ').format(n) + " so'm";
+  }
+
+  function renderMiniProducts() {
+    if (!productsEl) return;
+    const items = CATEGORIES[activeCategory].items;
+    productsEl.innerHTML = items.map(function (item) {
+      return (
+        '<div class="product-card-mini">' +
+          '<div style="height:75px;display:flex;align-items:center;justify-content:center;font-size:2rem;background:rgba(255,255,255,0.05);border-radius:6px;margin-bottom:0.4rem;">' +
+            item.emoji +
+          '</div>' +
+          '<div class="product-title-mini" title="' + item.name + '">' + item.name + '</div>' +
+          '<div class="product-price-mini">' + money(item.price) + '</div>' +
+          '<button type="button" class="btn-mini-add" data-add="' + item.name + '">+ Savatga</button>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  function updateCartCount() {
+    if (!cartEl) return;
+    const cart = getCart();
+    const count = cart.reduce(function (sum, item) {
+      return sum + (item.qty || 1);
+    }, 0);
+    cartEl.textContent = count;
+  }
+
+  function updatePreview() {
+    const name = nameInput.value.trim() || "Do'koningiz";
+    if (titleEl) titleEl.textContent = name;
+    if (slugEl) slugEl.textContent = slugify(name) || 'mening-dokonim';
+  }
+
+  nameInput.addEventListener('input', updatePreview);
+
+  chips.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      chips.forEach(function (c) { c.classList.remove('active'); });
+      chip.classList.add('active');
+      activeCategory = chip.dataset.cat || 'drinks';
+      if (iconEl) iconEl.textContent = CATEGORIES[activeCategory].icon;
+      renderMiniProducts();
+    });
+  });
+
+  if (productsEl) {
+    productsEl.addEventListener('click', function (e) {
+      const btn = e.target.closest('[data-add]');
+      if (!btn) return;
+      const cart = getCart();
+      const existing = cart.find(function (item) { return item.name === btn.dataset.add; });
+      if (existing) {
+        existing.qty = (existing.qty || 1) + 1;
+      } else {
+        cart.push({ name: btn.dataset.add, qty: 1 });
+      }
+      saveCart(cart);
+      updateCartCount();
+      btn.textContent = '✓ Qo\'shildi';
+      setTimeout(function () { btn.textContent = '+ Savatga'; }, 1200);
+    });
+  }
+
+  if (launchBtn) {
+    launchBtn.addEventListener('click', function () {
+      const name = nameInput.value.trim() || "Mening Do'konim";
+      const store = getStore();
+      store.name = name;
+      store.slug = slugify(name) || 'mening-dokonim';
+      store.icon = CATEGORIES[activeCategory].icon;
+      store.category = activeCategory;
+      if (phoneInput && phoneInput.value.trim()) store.phone = phoneInput.value.trim();
+      saveStore(store);
+      window.location.href = 'store.html';
+    });
+  }
+
+  try {
+    renderMiniProducts();
+    updateCartCount();
+    updatePreview();
+    document.documentElement.setAttribute('data-demo', 'ok');
+  } catch (e) {
+    document.documentElement.setAttribute('data-demo', 'err: ' + e.message);
+  }
+})();

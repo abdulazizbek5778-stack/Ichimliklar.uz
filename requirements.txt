@@ -25,8 +25,8 @@ gunicorn>=21.2              # Linux/macOS uchun WSGI server
 # PostgreSQL ishlatilsa (DB_ENGINE=django.db.backends.postgresql):
 # psycopg2-binary>=2.9
 
-# Statik fayllarni siqish/keshlash (settings.py ga middleware qo'shish kerak):
-# whitenoise>=6.6
+# Statik fayllarni siqish/keshlash (productionda DEBUG=False bo'lsa ham ishlaydi):
+whitenoise>=6.6
 
 # Rasm yuklashni bulutga saqlash:
 # django-storages>=1.14

@@ -58,6 +58,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # Productionda (DEBUG=False) statik fayllarni ham beradi
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -115,8 +117,20 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static', BASE_DIR]
+# Faqat static/ papkasi yig'iladi. Ilgari BASE_DIR ham qo'shilgan edi va
+# undagi eski nusxalar (style.css, app.js) static/ dagi yangilarini bosib ketardi.
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# collectstatic'dan keyin statik fayllarni siqilgan holda berish (WhiteNoise)
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
+    },
+}
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -132,3 +146,21 @@ GOOGLE_CLIENT_ID = os.environ.get(
 )
 LOGIN_REDIRECT_URL = '/store.html'
 LOGOUT_REDIRECT_URL = '/store.html'
+
+# ===== PRODUCTION (Render) SOZLAMALARI =====
+# Render HTTPS orqali keladi; Django buni to'g'ri aniqlashi uchun:
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Admin/API POST so'rovlarida CSRF tekshiruvi o'tishi uchun ishonchli domenlar
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',')
+    if origin.strip()
+]
+
+# Render o'z domenini muhit o'zgaruvchisi orqali beradi — avtomatik qo'shamiz
+_render_host = os.environ.get('RENDER_EXTERNAL_HOSTNAME', '').strip()
+if _render_host:
+    CSRF_TRUSTED_ORIGINS.append(f'https://{_render_host}')
+    if _render_host not in ALLOWED_HOSTS and '*' not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(_render_host)
