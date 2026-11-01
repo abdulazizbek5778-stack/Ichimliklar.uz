@@ -88,26 +88,54 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-DB_ENGINE = os.environ.get('DB_ENGINE', 'django.db.backends.sqlite3')
-DB_NAME = os.environ.get('DB_NAME', '').strip()
+# ===== MA'LUMOTLAR BAZASI =====
+# Render/Neon/Supabase kabi xizmatlar ulanish manzilini DATABASE_URL da beradi.
+# DATABASE_URL bo'lsa — o'sha ishlatiladi (doimiy baza).
+# Bo'lmasa — lokal SQLite (faqat kompyuterda ishlash uchun).
+DATABASE_URL = os.environ.get('DATABASE_URL', '').strip()
 
-if DB_NAME:
-    # SQLite uchun nisbiy yo'l loyiha papkasiga bog'lanadi
-    if DB_ENGINE.endswith('sqlite3') and not os.path.isabs(DB_NAME):
-        DB_NAME = str(BASE_DIR / DB_NAME)
+if DATABASE_URL:
+    try:
+        import dj_database_url
+    except ImportError:  # kutubxona o'rnatilmagan bo'lsa ham ishlashda davom etadi
+        dj_database_url = None
+
+    if dj_database_url is not None:
+        DATABASES = {
+            'default': dj_database_url.parse(
+                DATABASE_URL,
+                conn_max_age=int(os.environ.get('DB_CONN_MAX_AGE', '600')),
+                conn_health_checks=True,
+            )
+        }
+    else:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': DATABASE_URL,
+            }
+        }
 else:
-    DB_NAME = str(BASE_DIR / 'db.sqlite3')
+    DB_ENGINE = os.environ.get('DB_ENGINE', 'django.db.backends.sqlite3')
+    DB_NAME = os.environ.get('DB_NAME', '').strip()
 
-DATABASES = {
-    'default': {
-        'ENGINE': DB_ENGINE,
-        'NAME': DB_NAME,
-        'USER': os.environ.get('DB_USER', ''),
-        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-        'HOST': os.environ.get('DB_HOST', ''),
-        'PORT': os.environ.get('DB_PORT', ''),
+    if DB_NAME:
+        # SQLite uchun nisbiy yo'l loyiha papkasiga bog'lanadi
+        if DB_ENGINE.endswith('sqlite3') and not os.path.isabs(DB_NAME):
+            DB_NAME = str(BASE_DIR / DB_NAME)
+    else:
+        DB_NAME = str(BASE_DIR / 'db.sqlite3')
+
+    DATABASES = {
+        'default': {
+            'ENGINE': DB_ENGINE,
+            'NAME': DB_NAME,
+            'USER': os.environ.get('DB_USER', ''),
+            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+            'HOST': os.environ.get('DB_HOST', ''),
+            'PORT': os.environ.get('DB_PORT', ''),
+        }
     }
-}
 
 AUTH_PASSWORD_VALIDATORS = []
 

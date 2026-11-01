@@ -1,0 +1,263 @@
+[
+{
+  "model": "shop.storeconfig",
+  "pk": 1,
+  "fields": {
+    "name": "Chashma Drinks",
+    "slug": "chashma-drinks",
+    "icon": "🥤",
+    "phone": "+998 90 123-45-67",
+    "address": "Toshkent shahri, Chilonzor tumani",
+    "banner_text": "Yangi mavsum aksiyasi! Barcha salqin ichimliklarga 15% chegirma!",
+    "tg_bot": "@chashma_drinks_bot",
+    "balance": "3840000.00"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 1,
+  "fields": {
+    "name": "Tog' Chashmasi Mineral Suv 1.5L",
+    "category": "drinks",
+    "price": "6000.00",
+    "old_price": "8000.00",
+    "image": "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=400&q=80",
+    "description": "Tabiiy tog' buloqlaridan olingan toza, gazsiz mineral ichimlik suvi.",
+    "stock": 45,
+    "is_popular": true,
+    "likes": 42,
+    "created_at": "2026-10-29T17:28:25.772Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 2,
+  "fields": {
+    "name": "Moxito Fresh (Limon & Yalpiz) 0.5L",
+    "category": "drinks",
+    "price": "18000.00",
+    "old_price": "22000.00",
+    "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=400&q=80",
+    "description": "Muzdek tabiiy ohak va yalpiz ekstraktli serob gazlangan limonad.",
+    "stock": 28,
+    "is_popular": true,
+    "likes": 89,
+    "created_at": "2026-10-29T17:28:25.773Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 4,
+  "fields": {
+    "name": "Muzli Qahva (Iced Latte Caramel)",
+    "category": "drinks",
+    "price": "22000.00",
+    "old_price": null,
+    "image": "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=400&q=80",
+    "description": "Arabika qahva donalari, yangi sut va karamel siropi bilan tayyorlangan salqin qahva.",
+    "stock": 19,
+    "is_popular": true,
+    "likes": 74,
+    "created_at": "2026-10-29T17:28:25.775Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 5,
+  "fields": {
+    "name": "Apelsin Fresh Organik 0.4L",
+    "category": "drinks",
+    "price": "20000.00",
+    "old_price": "25000.00",
+    "image": "https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=400&q=80",
+    "description": "Yangi uzilgan apelsinlardan siqilgan vitaminlarga boy sharbat.",
+    "stock": 15,
+    "is_popular": true,
+    "likes": 31,
+    "created_at": "2026-10-29T17:28:25.776Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 6,
+  "fields": {
+    "name": "Klassik Muzdek Limonad 1L",
+    "category": "drinks",
+    "price": "15000.00",
+    "old_price": null,
+    "image": "https://images.unsplash.com/photo-1523371067-1793740e6988?auto=format&fit=crop&w=400&q=80",
+    "description": "Uy sharoitida tayyorlanganidek nozik limon va sitrus ifori.",
+    "stock": 50,
+    "is_popular": true,
+    "likes": 63,
+    "created_at": "2026-10-29T17:28:25.777Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 7,
+  "fields": {
+    "name": "Borjomi Tabiiy Mineral Gazlangan Suv 0.5L",
+    "category": "water",
+    "price": "16000.00",
+    "old_price": "19000.00",
+    "image": "https://images.unsplash.com/photo-1559839914-1b311394b986?auto=format&fit=crop&w=600&q=80",
+    "description": "Gruziyaning tabiiy vulqon kelib chiqishiga ega mashhur mineral gazlangan suvi. 60 dan ortiq minerallarga boy. 0.5L shisha.",
+    "stock": 50,
+    "is_popular": true,
+    "likes": 118,
+    "created_at": "2026-10-29T18:45:05.574Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 8,
+  "fields": {
+    "name": "Tog‘ Chashmasi Toza Gazsiz Suv (Bezgaz) 1.0L",
+    "category": "water",
+    "price": "5000.00",
+    "old_price": "7000.00",
+    "image": "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=600&q=80",
+    "description": "Tabiiy tog‘ buloqlaridan olingan toza, yumshoq va salqin gazsiz (bezgaz) tabiiy ichimlik suvi. 1.0L.",
+    "stock": 50,
+    "is_popular": true,
+    "likes": 94,
+    "created_at": "2026-10-29T18:45:05.576Z"
+  }
+},
+{
+  "model": "shop.comment",
+  "pk": 1,
+  "fields": {
+    "product": 1,
+    "author": "Sardor",
+    "text": "Juda yoqdi, zo'r mahsulot!",
+    "created_at": "2026-10-29T17:28:25.773Z"
+  }
+},
+{
+  "model": "shop.comment",
+  "pk": 2,
+  "fields": {
+    "product": 2,
+    "author": "Sardor",
+    "text": "Juda yoqdi, zo'r mahsulot!",
+    "created_at": "2026-10-29T17:28:25.774Z"
+  }
+},
+{
+  "model": "shop.comment",
+  "pk": 4,
+  "fields": {
+    "product": 4,
+    "author": "Sardor",
+    "text": "Juda yoqdi, zo'r mahsulot!",
+    "created_at": "2026-10-29T17:28:25.776Z"
+  }
+},
+{
+  "model": "shop.comment",
+  "pk": 5,
+  "fields": {
+    "product": 5,
+    "author": "Sardor",
+    "text": "Juda yoqdi, zo'r mahsulot!",
+    "created_at": "2026-10-29T17:28:25.776Z"
+  }
+},
+{
+  "model": "shop.comment",
+  "pk": 6,
+  "fields": {
+    "product": 6,
+    "author": "Sardor",
+    "text": "Juda yoqdi, zo'r mahsulot!",
+    "created_at": "2026-10-29T17:28:25.777Z"
+  }
+},
+{
+  "model": "shop.comment",
+  "pk": 7,
+  "fields": {
+    "product": 7,
+    "author": "Akmal aka",
+    "text": "Borjomi har doim original va muzdek keladi, rahmat!",
+    "created_at": "2026-10-29T18:45:05.575Z"
+  }
+},
+{
+  "model": "shop.comment",
+  "pk": 8,
+  "fields": {
+    "product": 7,
+    "author": "Zilola",
+    "text": "Oshqozon og'rig'ida eng zo'r yordamchi suv.",
+    "created_at": "2026-10-29T18:45:05.575Z"
+  }
+},
+{
+  "model": "shop.comment",
+  "pk": 9,
+  "fields": {
+    "product": 8,
+    "author": "Davron",
+    "text": "Juda toza va ta'mi shirin gazsiz suv, har kuni olamiz!",
+    "created_at": "2026-10-29T18:45:05.577Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 1,
+  "fields": {
+    "order_id": "ORD-9421",
+    "customer": "Sardor Alimov",
+    "phone": "+998 90 777-11-22",
+    "address": "Yunusobod 4-mavze, 12-uy",
+    "items": "Moxito Fresh (2 dona), Tog' Chashmasi (4 dona)",
+    "total": "60000.00",
+    "payment": "Click",
+    "status": "Yangi",
+    "created_at": "2026-10-29T17:28:25.778Z"
+  }
+},
+{
+  "model": "waters.waterproduct",
+  "pk": 1,
+  "fields": {
+    "name": "Borjomi Tabiiy Mineral Gazlangan Suv 0.5L",
+    "water_type": "sparkling",
+    "volume": "0.5L (Shisha idish)",
+    "price": "16000.00",
+    "old_price": "19000.00",
+    "stock": 50,
+    "origin": "Gruziya, Borjomi darasi (Tabiiy vulqon bulog‘i)",
+    "mineralization": "5.0 – 7.5 g/l (Yuqori mineral tarkib)",
+    "ph_level": "6.5 pH (Neytral-ishqoriy)",
+    "image": "https://images.unsplash.com/photo-1559839914-1b311394b986?auto=format&fit=crop&w=600&q=80",
+    "description": "Dunyoga mashhur tabiiy vulqon kelib chiqishiga ega minerallashgan shifobaxsh gazlangan suv. 60 dan ortiq hayotiy muhim minerallarga boy.",
+    "benefits": "Oshqozon va hazm qilish tizimi faoliyatini normallashtiradi, suv-tuz balansini tiklaydi, organizmdan toksinlarni chiqarishga yordam beradi.",
+    "is_active": true,
+    "created_at": "2026-10-29T18:45:05.572Z"
+  }
+},
+{
+  "model": "waters.waterproduct",
+  "pk": 2,
+  "fields": {
+    "name": "Tog‘ Chashmasi Toza Gazsiz Suv (Bezgaz) 1.0L",
+    "water_type": "still",
+    "volume": "1.0L",
+    "price": "5000.00",
+    "old_price": "7000.00",
+    "stock": 50,
+    "origin": "O‘zbekiston, Chotqol tog‘ buloqlari (Tabiiy filtrlangan)",
+    "mineralization": "0.15 – 0.35 g/l (Yengil minerallashuv)",
+    "ph_level": "7.4 pH (Optimal muvozanat)",
+    "image": "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=600&q=80",
+    "description": "Tabiiy tog‘ tizmalarining chuqur qatlamlaridan olingan toza, yumshoq va kristaldek tiniq gazsiz ichimlik suvi. Kundalik iste’mol uchun ideal.",
+    "benefits": "Hujayralarni chuqur namlaydi, yengil hazm bo‘ladi, bolalar va sportchilar uchun har kuni ichishga tavsiya etiladi.",
+    "is_active": true,
+    "created_at": "2026-10-29T18:45:05.573Z"
+  }
+}
+]

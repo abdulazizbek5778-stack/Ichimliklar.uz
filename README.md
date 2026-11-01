@@ -52,3 +52,56 @@ Brauzerda ochish:
 3. **To'lov komissiyasi:** Click va Payme orqali har bir buyurtmadan 0.5% - 1% tranzaksiya haqi olish.
 
 Yaratuvchi: **Xurramov Abdulaziz**
+
+---
+
+## 🌐 Render'da doimiy ishlash (PostgreSQL)
+
+Render'ning vaqtinchalik diski har deploy'da o'chib ketadi, shuning uchun SQLite o'rniga
+**PostgreSQL** ishlatiladi. Kod `DATABASE_URL` muhit o'zgaruvchisini avtomatik o'qiydi
+(`core/settings.py`). `DATABASE_URL` bo'lmasa lokal SQLite ishlayveradi.
+
+### 1. Baza yaratish
+
+Render Dashboard → **New +** → **Postgres** → nomi: `ichimliklar-db` → rejani tanlang → **Create**.
+Yaratilgach **Connections** bo'limidan **Internal Database URL** ni nusxalang
+(`postgresql://...` ko'rinishida).
+
+### 2. Web servisga ulash
+
+Render Dashboard → saytingiz servisi → **Environment** → **Add Environment Variable**:
+
+| Key | Value |
+|---|---|
+| `DATABASE_URL` | nusxalangan **Internal Database URL** |
+| `DJANGO_SUPERUSER_USERNAME` | `admin` (o'zingiz xohlagan login) |
+| `DJANGO_SUPERUSER_EMAIL` | `admin@example.com` |
+| `DJANGO_SUPERUSER_PASSWORD` | kuchli parol |
+| `DJANGO_DEBUG` | `False` |
+
+So'ng **Manual Deploy → Deploy latest commit**.
+
+### 3. Build Command (bir marta o'zgartiriladi)
+
+Servis → **Settings** → **Build Command**:
+
+```bash
+./build.sh
+```
+
+`build.sh` kutubxonalarni o'rnatadi, statik fayllarni yig'adi, migratsiyalarni qo'llaydi,
+adminni yaratadi va baza bo'sh bo'lsa boshlang'ich mahsulotlarni yuklaydi.
+
+### 4. Ma'lumotlar saqlanadimi?
+
+Ha. Endi mahsulotlar, buyurtmalar va admin parol har deploy'dan keyin ham saqlanadi.
+
+> Eslatma: Render bepul PostgreSQL ba'zi tariflarda muddatli bo'ladi. Butunlay bepul va
+> doimiy baza kerak bo'lsa **Neon.tech** yoki **Supabase** ishlatsa bo'ladi — ular ham
+> `DATABASE_URL` beradi, qolgan sozlash bir xil.
+
+### 5. Sayt uxlab qolmasligi (keep-alive)
+
+`.github/workflows/keepalive.yml` har 10 daqiqada saytga so'rov yuboradi, shunda Render
+bepul rejasidagi servis uxlab qolmaydi. GitHub'da **Actions** bo'limi yoqilgan bo'lishi kerak.
+

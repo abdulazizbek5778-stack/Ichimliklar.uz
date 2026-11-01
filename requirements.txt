@@ -17,16 +17,11 @@ Pillow>=10.0
 
 # --- Production server ---
 gunicorn>=21.2              # Linux/macOS uchun WSGI server
+whitenoise>=6.6             # statik fayllarni (CSS/JS) productionda berish
 
-# =======================================
-# Ixtiyoriy (kerak bo'lsa izohdan chiqaring)
-# =======================================
-
-# PostgreSQL ishlatilsa (DB_ENGINE=django.db.backends.postgresql):
-# psycopg2-binary>=2.9
-
-# Statik fayllarni siqish/keshlash (productionda DEBUG=False bo'lsa ham ishlaydi):
-whitenoise>=6.6
+# --- Doimiy ma'lumotlar bazasi (Render Postgres / Neon / Supabase) ---
+dj-database-url>=2.1        # DATABASE_URL ni Django sozlamasiga aylantiradi
+psycopg[binary]>=3.2        # PostgreSQL drayveri
 
 # Rasm yuklashni bulutga saqlash:
 # django-storages>=1.14
