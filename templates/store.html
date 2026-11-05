@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="pageTitle">{{ config.name|default:"Chashma Drinks" }} — Django + SQLite Rasmiy Do'kon</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/style.css?v=black-theme-1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     .admin-top-bar {
-      background: linear-gradient(90deg, #1e3a8a 0%, #2563eb 50%, #7c3aed 100%);
+      background: linear-gradient(90deg, #080808 0%, #151515 55%, #090909 100%);
       color: white;
       padding: 0.6rem 1.5rem;
       font-size: 0.85rem;
@@ -17,7 +17,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
       position: sticky;
       top: 0;
       z-index: 100;
@@ -58,7 +58,7 @@
     }
 
     .store-navbar {
-      background: rgba(15, 23, 42, 0.95);
+      background: rgba(5, 5, 5, 0.97);
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border-subtle);
       position: sticky;
@@ -141,7 +141,7 @@
     }
 
     .store-hero-banner {
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%), var(--bg-card);
+      background: linear-gradient(135deg, #191919 0%, #0c0c0c 100%);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-xl);
       padding: 2.25rem;
@@ -165,6 +165,261 @@
       margin-bottom: 4rem;
     }
 
+    .lead-section {
+      margin: 0 0 4rem;
+      padding: 2rem;
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(108, 140, 255, 0.25);
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(17, 24, 39, 0.9));
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
+    }
+
+    .lead-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .lead-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .eyebrow {
+      margin: 0;
+      font-size: 0.74rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      font-weight: 800;
+    }
+
+    .lead-copy h2 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.1;
+      color: #f8fafc;
+    }
+
+    .lead-copy p {
+      margin: 0;
+      color: #cbd5e1;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .lead-points {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.85rem;
+      margin-top: 0.5rem;
+    }
+
+    .lead-point {
+      background: rgba(148, 163, 184, 0.08);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: 16px;
+      padding: 0.9rem 0.8rem;
+      color: #e2e8f0;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .lead-point strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      color: #f8fafc;
+      font-size: 0.9rem;
+    }
+
+    .order-card {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(96, 165, 250, 0.25);
+      border-radius: 22px;
+      padding: 1.35rem;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    .order-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      gap: 0.75rem;
+    }
+
+    .order-card-header h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      color: #f8fafc;
+    }
+
+    .mini-badge {
+      background: rgba(34, 197, 94, 0.12);
+      color: #86efac;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      border-radius: 999px;
+      padding: 0.3rem 0.7rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .order-form {
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+    }
+
+    .order-form label {
+      display: block;
+      margin-bottom: 0.38rem;
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+
+    .order-form input,
+    .order-form textarea,
+    .order-form select {
+      width: 100%;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.9);
+      color: #f8fafc;
+      padding: 0.8rem 0.9rem;
+      font: inherit;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .order-form textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .order-form input:focus,
+    .order-form textarea:focus,
+    .order-form select:focus {
+      border-color: rgba(96, 165, 250, 0.8);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+    }
+
+    .order-submit {
+      margin-top: 0.4rem;
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.38);
+    }
+
+    .order-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45);
+    }
+
+    .reviews-section {
+      margin: 0 0 4rem;
+    }
+
+    .section-head {
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(1.8rem, 2.5vw, 2.5rem);
+      color: #f8fafc;
+    }
+
+    .section-head .tag {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #a78bfa;
+    }
+
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .review-card {
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 20px;
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .review-top {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .review-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: white;
+      font-size: 1rem;
+    }
+
+    .review-meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .review-meta strong {
+      color: #f8fafc;
+      font-size: 0.95rem;
+    }
+
+    .review-meta span {
+      color: #a5b4cf;
+      font-size: 0.74rem;
+    }
+
+    .stars {
+      color: #fbbf24;
+      letter-spacing: 0.12em;
+      font-size: 0.82rem;
+    }
+
+    .review-card p {
+      margin: 0;
+      color: #dbe5f3;
+      line-height: 1.7;
+      font-size: 0.93rem;
+    }
+
     .store-card {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
@@ -186,7 +441,7 @@
       position: relative;
       height: 220px;
       overflow: hidden;
-      background: #111827;
+      background: #141414;
     }
 
     .card-img-wrap img {
@@ -216,7 +471,7 @@
       position: absolute;
       top: 10px;
       right: 10px;
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(16, 16, 16, 0.95);
       border: 1px solid var(--border-subtle);
       color: #38bdf8;
       padding: 3px 8px;
@@ -397,7 +652,7 @@
       display: flex;
       gap: 0.5rem;
       padding: 0.5rem 0.75rem;
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(12, 12, 12, 0.96);
       border-top: 1px solid var(--border-subtle);
       justify-content: flex-end;
     }
@@ -442,7 +697,7 @@
       bottom: 0;
       width: 440px;
       max-width: 100vw;
-      background: #0f172a;
+      background: #101010;
       border-left: 1px solid var(--border-subtle);
       z-index: 210;
       transform: translateX(100%);
@@ -508,7 +763,7 @@
     .cart-footer {
       padding: 1.5rem;
       border-top: 1px solid var(--border-subtle);
-      background: #0b1120;
+      background: #080808;
     }
 
     .checkout-form {
@@ -529,7 +784,7 @@
       justify-content: center;
     }
     .modal-box {
-      background: #0f172a;
+      background: #101010;
       border: 1px solid var(--border-accent);
       border-radius: var(--radius-xl);
       width: 540px;
@@ -577,22 +832,22 @@
       <button class="btn-admin-add" onclick="openStoryModal()">
         <i class="fa fa-circle-play"></i> + Story Qo'shish
       </button>
-      <button class="btn-admin-add" style="background: #2563eb;" onclick="openCreateModal()">
+      <button class="btn-admin-add" style="background: #242424;" onclick="openCreateModal()">
         <i class="fa fa-plus-circle"></i> + Mahsulot Qo'shish
       </button>
       <a href="/dashboard/" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.35rem 0.8rem;">
         <i class="fa fa-chart-line"></i> Dashboard
       </a>
-      <a href="/admin/" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.35rem 0.8rem; background: rgba(59,130,246,0.2);">
+      <a href="/admin/" target="_blank" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.35rem 0.8rem;">
         <i class="fa fa-database"></i> Django Admin ↗
       </a>
       <a href="/logout/" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.35rem 0.8rem; color: #f87171;">
         Chiqish ✕
       </a>
       {% else %}
-      <button onclick="openAdminLoginModal()" class="btn btn-primary btn-sm" style="font-size: 0.8rem; padding: 0.4rem 1rem;">
-        <i class="fa fa-key"></i> Admin Kirish (Parol bilan)
-      </button>
+      <a href="/owner/login/" class="btn btn-primary btn-sm" style="font-size: 0.8rem; padding: 0.4rem 1rem; text-decoration: none;">
+        <i class="fa fa-fingerprint"></i> Admin kirish
+      </a>
       {% endif %}
     </div>
   </div>
@@ -720,6 +975,112 @@
     <div class="products-grid" id="productsGrid">
       <!-- Injected via JavaScript from Django SQLite -->
     </div>
+
+    <section class="lead-section" aria-labelledby="lead-title">
+      <div class="lead-layout">
+        <div class="lead-copy">
+          <p class="eyebrow">Sizga osonlik</p>
+          <h2 id="lead-title">Buyurtma qoldiring — biz tezda javob beramiz.</h2>
+          <p>
+            Mahsulotni tanlang, istalgan vaqt va manzilni yozing. Biz sizga tezkor konsultatsiya,
+            to’lov va yetkazib berish haqida aniq ma’lumot beramiz.
+          </p>
+          <div class="lead-points">
+            <div class="lead-point">
+              <strong>⚡ Tez javob</strong>
+              15 daqiqada qayta aloqa
+            </div>
+            <div class="lead-point">
+              <strong>💳 Qulay to’lov</strong>
+              Naqd yoki elektron to’lov
+            </div>
+            <div class="lead-point">
+              <strong>📦 Yetkazib berish</strong>
+              O’z hududda tezkor etkazish
+            </div>
+          </div>
+        </div>
+
+        <div class="order-card">
+          <div class="order-card-header">
+            <h3>Buyurtma qoldirish</h3>
+            <span class="mini-badge">Online</span>
+          </div>
+
+          <form class="order-form" id="leadForm">
+            <div class="field-row">
+              <div>
+                <label for="leadName">Ismingiz</label>
+                <input id="leadName" name="leadName" type="text" placeholder="Masalan: Aziza" required>
+              </div>
+              <div>
+                <label for="leadPhone">Telefon</label>
+                <input id="leadPhone" name="leadPhone" type="tel" placeholder="+998 91 123 45 67" required>
+              </div>
+            </div>
+
+            <div>
+              <label for="leadProduct">Mahsulot yoki xizmat</label>
+              <input id="leadProduct" name="leadProduct" type="text" placeholder="Masalan: 2L suv + 1 dona limonad">
+            </div>
+
+            <div>
+              <label for="leadMessage">Xabar</label>
+              <textarea id="leadMessage" name="leadMessage" placeholder="Yetkazib berish manzili, tezlik, miqdor va boshqa ma'lumotlarni yozing..."></textarea>
+            </div>
+
+            <button type="submit" class="order-submit">Buyurtma qoldirish</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="reviews-section" aria-labelledby="reviews-title">
+      <div class="section-head">
+        <div>
+          <p class="tag">Mijozlar fikri</p>
+          <h2 id="reviews-title">Biz bilan ishlaganlar nima deyishadi</h2>
+        </div>
+      </div>
+
+      <div class="reviews-grid">
+        <article class="review-card">
+          <div class="review-top">
+            <div class="review-avatar">N</div>
+            <div class="review-meta">
+              <strong>Nodira</strong>
+              <span>Buyurtmachi</span>
+            </div>
+          </div>
+          <div class="stars" aria-label="5 yulduz">★★★★★</div>
+          <p>“Muyassar va tezkor xizmat. Buyurtma berish juda oson bo’ldi, yetkazish vaqtida ham hamma narsa to’g’ri kelib qoldi.”</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-top">
+            <div class="review-avatar">A</div>
+            <div class="review-meta">
+              <strong>Aziz</strong>
+              <span>Doimiy mijoz</span>
+            </div>
+          </div>
+          <div class="stars" aria-label="5 yulduz">★★★★★</div>
+          <p>“Mahsulot sifati yaxshi, xizmat ham chiroyli. Eng yaxshi tomoni — savatchadan tez buyurtma berish va menejerlar quyoshdek javob beradi.”</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-top">
+            <div class="review-avatar">M</div>
+            <div class="review-meta">
+              <strong>Malika</strong>
+              <span>Ofis buyurtmasi</span>
+            </div>
+          </div>
+          <div class="stars" aria-label="5 yulduz">★★★★★</div>
+          <p>“Biz ofis uchun buyurtma berdik, hech qanday muammo bo’lmadi. Shartnoma va yetkazib berish jarayoni juda muloyim va tushunarli edi.”</p>
+        </article>
+      </div>
+    </section>
   </main>
 
   <!-- FULLSCREEN INSTAGRAM/TELEGRAM STORY VIEWER MODAL -->
@@ -790,7 +1151,7 @@
         </div>
         <div>
           <label style="font-size: 0.8rem; color: var(--text-muted);">To'lov turi</label>
-          <select id="custPayment" class="wizard-input" style="background: #1e293b;">
+          <select id="custPayment" class="wizard-input" style="background: #151515;">
             <option value="Click">Click Evolution 💳</option>
             <option value="Payme">Payme 📲</option>
             <option value="Naqd pul">Yetkazilganda naqd pul 💵</option>
@@ -820,21 +1181,18 @@
       </div>
 
       <form id="adminLoginForm">
+        {% csrf_token %}
         <div style="margin-bottom: 1rem;">
           <label style="font-size: 0.85rem; color: var(--text-muted);">Login (Foydalanuvchi nomi)</label>
-          <input type="text" id="adminUsernameInput" class="wizard-input" value="xurramov_abdulaziz" required autocomplete="username">
+          <input type="text" id="adminUsernameInput" class="wizard-input" required autocomplete="username">
         </div>
 
         <div style="margin-bottom: 1.25rem;">
           <label style="font-size: 0.85rem; color: var(--text-muted);">Parol</label>
           <div style="display: flex; gap: 0.5rem;">
-            <input type="password" id="adminPasswordInput" class="wizard-input" value="1234" required autocomplete="current-password">
+            <input type="password" id="adminPasswordInput" class="wizard-input" required autocomplete="current-password">
             <button type="button" class="btn btn-secondary" onclick="toggleAdminPassVisibility()">👁️</button>
           </div>
-        </div>
-
-        <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 0.6rem; font-size: 0.8rem; color: #93c5fd; margin-bottom: 1.25rem;">
-          🔑 Boshlang'ich parol: <strong style="color: white;">1234</strong>
         </div>
 
         <div style="display: flex; gap: 0.75rem;">
@@ -845,6 +1203,7 @@
             Bekor qilish
           </button>
         </div>
+        <a href="/owner/login/" style="display: block; margin-top: 1rem; color: #93c5fd; text-align: center; font-size: 0.85rem;">Face ID / Passkey bilan kirish →</a>
       </form>
     </div>
   </div>
@@ -958,7 +1317,7 @@
 
   <!-- Google Login Modal — Authentic 1-Click Google Account Chooser -->
   <div class="modal-overlay" id="googleLoginModal">
-    <div class="modal-box" style="width: 440px; max-width: 92vw; padding: 2rem 2.25rem; border-radius: 24px; background: #161926; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 25px 60px -12px rgba(0,0,0,0.85); position: relative; overflow: hidden;">
+    <div class="modal-box" style="width: 440px; max-width: 92vw; padding: 2rem 2.25rem; border-radius: 24px; background: #111; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 25px 60px -12px rgba(0,0,0,0.85); position: relative; overflow: hidden;">
       
       <!-- Top Accent Bar (Google colors) -->
       <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #4285F4 0%, #34A853 35%, #FBBC05 70%, #EA4335 100%);"></div>
@@ -992,7 +1351,7 @@
            onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.12)';this.style.transform='none';this.style.boxShadow='none'">
         <div style="position: relative; width: 46px; height: 46px; flex-shrink: 0;">
           <img src="https://ui-avatars.com/api/?name=Abdulaziz+Xurramov&background=4285F4&color=fff&size=150" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid #4285F4;">
-          <div style="position: absolute; bottom: -2px; right: -2px; width: 15px; height: 15px; border-radius: 50%; background: #10b981; border: 2px solid #161926;" title="Faol"></div>
+          <div style="position: absolute; bottom: -2px; right: -2px; width: 15px; height: 15px; border-radius: 50%; background: #10b981; border: 2px solid #111;" title="Faol"></div>
         </div>
         <div style="flex: 1; overflow: hidden;">
           <div style="font-weight: 700; color: #fff; font-size: 0.95rem;">Abdulaziz Xurramov</div>
@@ -1055,10 +1414,38 @@
     let currentStoryIndex = 0;
     let storyTimer = null;
     let storyProgressInterval = null;
+    let catalogLoadError = false;
 
-    document.addEventListener('DOMContentLoaded', () => {
-      renderStories();
-      renderProducts();
+    async function loadStoreCatalog() {
+      const response = await fetch('/api/store/catalog/');
+      if (!response.ok) throw new Error('Do‘kon katalogini yuklab bo‘lmadi.');
+      const catalog = await response.json();
+      const store = getStore();
+      store.products = catalog.products;
+      store.stories = catalog.stories.map(story => ({
+        ...story,
+        avatar: story.image,
+        date: story.date || 'Yangi'
+      }));
+      saveStore(store);
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        await loadStoreCatalog();
+      } catch (error) {
+        catalogLoadError = true;
+        console.error(error);
+        document.getElementById('productsGrid').innerHTML = `
+          <div style="grid-column:1/-1;text-align:center;padding:3rem;color:#f87171;">
+            Do'kon katalogi yuklanmadi. Sahifani yangilang yoki keyinroq urinib ko'ring.
+          </div>`;
+        document.getElementById('storiesContainer').replaceChildren();
+      }
+      if (!catalogLoadError) {
+        renderStories();
+        renderProducts();
+      }
       updateCartUI();
       renderGoogleAuthUI();
 
@@ -1159,14 +1546,13 @@
 
         fetch('/api/auth/login/', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
           body: JSON.stringify({ username, password })
         })
         .then(res => res.json())
         .then(data => {
           if (data.status === 'ok') {
-            alert(`Xush kelibsiz, ${data.username}! Django Admin muvaffaqiyatli faollashdi.`);
-            window.location.reload();
+            window.location.assign(data.redirect || '/dashboard/');
           } else {
             alert(data.message || 'Noto\'g\'ri login yoki parol!');
           }
@@ -1218,7 +1604,7 @@
 
         fetch(endpoint, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
           body: JSON.stringify({ name, price, stock, image, description: desc })
         })
         .then(() => {
@@ -1254,7 +1640,7 @@
 
         fetch('/api/story/create/', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
           body: JSON.stringify({ title, caption, image })
         })
         .then(r => r.json())
@@ -1298,6 +1684,12 @@
       document.getElementById('adminLoginModal').style.display = 'none';
     }
 
+    function escapeStoreHTML(value) {
+      return String(value ?? '').replace(/[&<>"']/g, character => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[character]);
+    }
+
     /* STORIES */
     function renderStories() {
       const store = getStore();
@@ -1319,9 +1711,9 @@
       html += stories.map((s, idx) => `
         <div class="story-item" style="position: relative;" onclick="viewStory(${idx})">
           <div class="story-ring">
-            <img class="story-avatar" src="${s.avatar || s.image}" alt="${s.title}">
+            <img class="story-avatar" src="${escapeStoreHTML(s.avatar || s.image)}" alt="${escapeStoreHTML(s.title)}">
           </div>
-          <span class="story-label">${s.title}</span>
+          <span class="story-label">${escapeStoreHTML(s.title)}</span>
           ${IS_DJANGO_ADMIN && s.id ? `
             <button onclick="event.stopPropagation(); deleteStory(${s.id}, ${idx})"
               title="Story'ni o'chirish"
@@ -1797,14 +2189,14 @@
         return `
           <div class="store-card" id="card-${p.id}">
             <div class="card-img-wrap">
-              <img src="${p.image}" alt="${p.name}" loading="lazy">
+              <img src="${escapeStoreHTML(p.image)}" alt="${escapeStoreHTML(p.name)}" loading="lazy">
               ${discountPercent > 0 ? `<span class="discount-tag">-${discountPercent}%</span>` : ''}
               <span class="stock-tag">Qoldiq: ${p.stock || 10} dona</span>
             </div>
 
             <div class="card-content">
-              <h3 class="product-title">${p.name}</h3>
-              <p class="product-desc">${p.description || ''}</p>
+              <h3 class="product-title">${escapeStoreHTML(p.name)}</h3>
+              <p class="product-desc">${escapeStoreHTML(p.description || '')}</p>
               
               <div class="social-reaction-bar">
                 <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="onLikeClicked(${p.id})">
@@ -1823,8 +2215,8 @@
                   ${comments.length === 0 ? '<div style="color: var(--text-muted); font-size: 0.8rem;">Hozircha izohlar yo\'q. Birinchi bo\'lib yozing!</div>' : 
                     comments.map(c => `
                       <div class="single-comment">
-                        <strong>${c.author}:</strong> ${c.text}
-                        <div style="font-size: 0.7rem; color: var(--text-muted);">${c.time}</div>
+                        <strong>${escapeStoreHTML(c.author)}:</strong> ${escapeStoreHTML(c.text)}
+                        <div style="font-size: 0.7rem; color: var(--text-muted);">${escapeStoreHTML(c.time)}</div>
                       </div>
                     `).join('')
                   }
@@ -1898,6 +2290,45 @@
       renderProducts();
     }
 
+    document.getElementById('leadForm')?.addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const name = document.getElementById('leadName').value.trim();
+      const phone = document.getElementById('leadPhone').value.trim();
+      const product = document.getElementById('leadProduct').value.trim();
+      const message = document.getElementById('leadMessage').value.trim();
+
+      if (!name || !phone) {
+        alert('Iltimos, ismingiz va telefon raqamingizni kiriting.');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/order/create/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customer: name,
+            phone: phone,
+            address: message || 'Manzil belgilanmagan',
+            items: product || 'Buyurtma qoldirish',
+            total: 0,
+            payment: 'Buyurtma qoldirish',
+            message: message,
+            product: product
+          })
+        });
+
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || 'Buyurtma qabul qilinmadi.');
+
+        const orderText = product ? `Mahsulot: ${product}.` : 'Mahsulot tanlandi.';
+        alert(`Rahmat, ${name}! Buyurtmangiz qabul qilindi. ${orderText} Biz tez orada ${phone} raqamiga qaytib bog'lanamiz.${message ? ' Izoh: ' + message : ''}`);
+        event.target.reset();
+      } catch (error) {
+        alert(error.message || 'Buyurtma qabul qilishda xatolik yuz berdi.');
+      }
+    });
+
     function openCreateModal() {
       document.getElementById('modalFormTitle').textContent = "Yangi Mahsulot / Post Qo'shish";
       document.getElementById('editProductId').value = '';
@@ -1932,9 +2363,19 @@
       document.getElementById('productModal').style.display = 'none';
     }
 
-    function deleteProductItem(id) {
+    async function deleteProductItem(id) {
       if (!confirm('Haqiqatdan ham ushbu mahsulotni o\'chirmoqchimisiz?')) return;
-      fetch(`/api/product/delete/${id}/`, { method: 'POST' }).catch(() => {});
+      try {
+        const response = await fetch(`/api/product/delete/${id}/`, {
+          method: 'POST',
+          headers: { 'X-CSRFToken': getCookie('csrftoken') }
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || 'Mahsulotni o‘chirib bo‘lmadi.');
+      } catch (error) {
+        alert(error.message || 'Serverga ulanishda xatolik.');
+        return;
+      }
       const store = getStore();
       store.products = store.products.filter(p => p.id !== id);
       saveStore(store);

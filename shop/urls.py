@@ -8,6 +8,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('dashboard.html', views.dashboard_view, name='dashboard_html'),
     path('index.html', views.home_view, name='index_html'),
+    path('owner/login/', views.admin_login_view, name='admin_login'),
 
     # Monitoring / keep-alive
     path('healthz/', views.health_view, name='health'),
@@ -15,6 +16,13 @@ urlpatterns = [
     # Auth
     path('api/auth/login/', views.api_admin_login, name='api_admin_login'),
     path('api/auth/google/', views.api_google_auth, name='api_google_auth'),
+    path('api/auth/passkey/register/begin/', views.passkey_registration_begin, name='passkey_registration_begin'),
+    path('api/auth/passkey/register/finish/', views.passkey_registration_finish, name='passkey_registration_finish'),
+    path('api/auth/passkey/login/begin/', views.passkey_authentication_begin, name='passkey_authentication_begin'),
+    path('api/auth/passkey/login/finish/', views.passkey_authentication_finish, name='passkey_authentication_finish'),
+    path('api/store/catalog/', views.api_store_catalog, name='api_store_catalog'),
+    path('api/admin/dashboard/', views.api_admin_dashboard, name='api_admin_dashboard'),
+    path('api/admin/settings/', views.api_update_store_settings, name='api_update_store_settings'),
     path('logout/', views.logout_view, name='logout'),
     
     # API endpoints

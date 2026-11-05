@@ -145,6 +145,8 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+# Admin image uploads are base64-encoded in JSON, which expands files by about a third.
+DATA_UPLOAD_MAX_MEMORY_SIZE = 8 * 1024 * 1024
 # Faqat static/ papkasi yig'iladi. Ilgari BASE_DIR ham qo'shilgan edi va
 # undagi eski nusxalar (style.css, app.js) static/ dagi yangilarini bosib ketardi.
 STATICFILES_DIRS = [BASE_DIR / 'static']
@@ -172,6 +174,7 @@ GOOGLE_CLIENT_ID = os.environ.get(
     'GOOGLE_CLIENT_ID',
     '191600140879-p4bbi5mcdfv5c255j0g08ajl81dmigm3.apps.googleusercontent.com'
 )
+WEBAUTHN_RP_ID = os.environ.get('WEBAUTHN_RP_ID', '').strip()
 LOGIN_REDIRECT_URL = '/store.html'
 LOGOUT_REDIRECT_URL = '/store.html'
 

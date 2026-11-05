@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dokonify — Do'kon Egasining Boshqaruv Paneli</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/style.css?v=black-theme-1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     .dashboard-layout {
@@ -14,7 +14,7 @@
     }
 
     .dash-sidebar {
-      background: #0b1120;
+      background: #050505;
       border-right: 1px solid var(--border-subtle);
       padding: 1.5rem;
       display: flex;
@@ -44,8 +44,8 @@
     }
 
     .dash-menu-link:hover, .dash-menu-link.active {
-      background: rgba(59, 130, 246, 0.15);
-      color: #60a5fa;
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
     }
 
     .dash-main {
@@ -138,7 +138,7 @@
       font-size: 0.75rem;
       font-weight: 600;
     }
-    .status-yangi { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
+    .status-yangi { background: rgba(255, 255, 255, 0.1); color: #e5e5e5; border: 1px solid rgba(255, 255, 255, 0.2); }
     .status-yetkazilmoqda { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
     .status-tugallandi { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
     .status-bekor { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
@@ -153,22 +153,44 @@
       display: none;
       align-items: center;
       justify-content: center;
+      padding: 1rem;
+      overflow-y: auto;
     }
 
     .modal-box {
-      background: #0f172a;
+      background: #101010;
       border: 1px solid var(--border-accent);
       border-radius: var(--radius-xl);
       width: 520px;
       max-width: 95vw;
+      max-height: 90vh;
+      overflow-y: auto;
       padding: 2rem;
       box-shadow: 0 10px 40px rgba(0,0,0,0.6);
     }
 
+    .mobile-dash-nav { display: none; }
+
     @media (max-width: 860px) {
       .dashboard-layout { grid-template-columns: 1fr; }
       .dash-sidebar { display: none; }
-      .dash-main { padding: 1.5rem 1rem; }
+      .dash-main { padding: 1rem; }
+      .dash-header { flex-wrap: wrap; gap: 1rem; }
+      .mobile-dash-nav {
+        display: flex;
+        gap: .5rem;
+        overflow-x: auto;
+        padding: .5rem;
+        margin: 0 0 1rem;
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-lg);
+        background: #101010;
+      }
+      .mobile-dash-nav .dash-menu-link { flex: 0 0 auto; padding: .65rem .8rem; font-size: .82rem; }
+      .data-table-card { padding: 1rem; }
+      .stat-cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+      .stat-card { padding: 1rem; }
+      .stat-val { font-size: 1.35rem; }
     }
   </style>
 </head>
@@ -189,8 +211,9 @@
       </div>
 
       <ul class="dash-menu">
-        <li><a class="dash-menu-link active" onclick="switchTab('orders', this)"><i class="fa fa-receipt"></i> Buyurtmalar</a></li>
-        <li><a class="dash-menu-link" onclick="switchTab('products', this)"><i class="fa fa-boxes-stacked"></i> Mahsulotlar</a></li>
+        <li><a class="dash-menu-link" onclick="switchTab('orders', this)"><i class="fa fa-receipt"></i> Buyurtmalar</a></li>
+        <li><a class="dash-menu-link active" onclick="switchTab('products', this)"><i class="fa fa-boxes-stacked"></i> Mahsulotlar</a></li>
+        <li><a class="dash-menu-link" onclick="switchTab('posts', this)"><i class="fa fa-images"></i> Postlar va storylar</a></li>
         <li><a class="dash-menu-link" onclick="switchTab('settings', this)"><i class="fa fa-sliders"></i> Sozlamalar</a></li>
       </ul>
 
@@ -205,51 +228,66 @@
     <main class="dash-main">
       <header class="dash-header">
         <div>
-          <h1 style="font-size: 1.8rem;" id="greetingTitle">Boshqaruv Paneli</h1>
-          <p style="font-size: 0.9rem;">Do'koningizdagi savdo va buyurtmalarni boshqaring</p>
+          <h1 style="font-size: 1.8rem;" id="greetingTitle">Do‘kon boshqaruvi</h1>
+          <p style="font-size: 0.9rem;">Mahsulot yoki postni qo‘shish, tahrirlash va o‘chirish shu yerda.</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <span style="color: var(--text-secondary); font-size: .9rem;">{{ user.username }}</span>
+          <a href="/logout/" class="btn btn-secondary btn-sm" style="color: #f87171; text-decoration: none;">Chiqish</a>
         </div>
 
-        <div style="display: flex; gap: 0.75rem;">
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button type="button" class="btn btn-secondary btn-sm" id="dashboardBackButton" onclick="navigateDashboardTab(-1)" disabled aria-label="Oldingi bo‘limga qaytish">
+            <i class="fa fa-arrow-left"></i> Orqaga
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" id="dashboardForwardButton" onclick="navigateDashboardTab(1)" disabled aria-label="Keyingi bo‘limga o‘tish">
+            Oldinga <i class="fa fa-arrow-right"></i>
+          </button>
           <button class="btn btn-primary" onclick="openAddProductModal()">
             <i class="fa fa-plus"></i> Yangi Mahsulot
           </button>
         </div>
       </header>
 
+      <nav class="mobile-dash-nav" aria-label="Boshqaruv bo‘limlari">
+        <a class="dash-menu-link" onclick="switchTab('orders', this)"><i class="fa fa-receipt"></i> Buyurtmalar</a>
+        <a class="dash-menu-link active" onclick="switchTab('products', this)"><i class="fa fa-boxes-stacked"></i> Mahsulotlar</a>
+        <a class="dash-menu-link" onclick="switchTab('posts', this)"><i class="fa fa-images"></i> Postlar</a>
+        <a class="dash-menu-link" onclick="switchTab('settings', this)"><i class="fa fa-sliders"></i> Sozlamalar</a>
+      </nav>
+
       <!-- Stats Cards -->
       <section class="stat-cards-grid">
         <div class="stat-card">
           <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">JAMI TUSHUM</span>
           <div class="stat-val" id="statRevenue">0 so'm</div>
-          <div class="stat-change">↑ +24% o'sish bu oyda</div>
+          <div class="stat-change">Bekor qilinmagan buyurtmalar</div>
         </div>
 
         <div class="stat-card">
           <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">BUYURTMALAR</span>
           <div class="stat-val" id="statOrders">0 ta</div>
-          <div class="stat-change" style="color: #60a5fa;">● Faol savdolar</div>
+          <div class="stat-change" style="color: #60a5fa;">Bazadagi buyurtmalar</div>
         </div>
 
         <div class="stat-card">
           <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">MAHSULOTLAR TURI</span>
           <div class="stat-val" id="statProducts">0 xil</div>
-          <div class="stat-change" style="color: #a78bfa;">Sotuvda mavjud</div>
+          <div class="stat-change" style="color: #a78bfa;">Bazadagi mahsulotlar</div>
         </div>
 
         <div class="stat-card">
-          <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">YECHIB OLISH UCHUN</span>
-          <div class="stat-val" id="statBalance" style="color: #34d399;">0 so'm</div>
-          <button onclick="alert('Pul mablag\'i Click/Payme hisobingizga 1 daqiqada o\'tkaziladi!')" style="background: none; border: none; color: #60a5fa; font-size: 0.8rem; cursor: pointer; padding: 0; margin-top: 4px; font-weight: 600;">
-            Hamyonga o'tkazish ➜
-          </button>
+          <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">JARAYONDAGI BUYURTMALAR</span>
+          <div class="stat-val" id="statActiveOrders" style="color: #34d399;">0 ta</div>
+          <div class="stat-change" style="color: #34d399;">Yangi yoki yetkazilmoqda</div>
         </div>
       </section>
 
       <!-- Orders Section Tab -->
-      <section id="tabOrders" class="data-table-card">
+      <section id="tabOrders" class="data-table-card" style="display: none;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h2 style="font-size: 1.3rem;">Yangi Buyurtmalar Ro'yxati</h2>
-          <span style="font-size: 0.85rem; color: #10b981;">● Jonli yangilanmoqda</span>
+          <h2 style="font-size: 1.3rem;">Buyurtmalar</h2>
+          <span style="font-size: 0.85rem; color: #10b981;">Buyurtma holatini ro‘yxatdan o‘zgartiring</span>
         </div>
 
         <div class="table-responsive">
@@ -273,7 +311,7 @@
       </section>
 
       <!-- Products Section Tab -->
-      <section id="tabProducts" class="data-table-card" style="display: none;">
+      <section id="tabProducts" class="data-table-card">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <h2 style="font-size: 1.3rem;">Mahsulotlar Katalogi</h2>
           <button class="btn btn-primary btn-sm" onclick="openAddProductModal()">
@@ -299,11 +337,54 @@
         </div>
       </section>
 
+      <section id="tabPosts" class="data-table-card" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+          <div>
+            <h2 style="font-size: 1.3rem;">Postlar va storylar</h2>
+            <p style="font-size: .85rem; color: var(--text-secondary); margin-top: .35rem;">Bu yerda joylagan postlaringiz do‘kon vitrinasida ko‘rinadi.</p>
+          </div>
+          <button class="btn btn-primary" type="button" onclick="document.getElementById('postTitle').focus()">
+            <i class="fa fa-plus"></i> Yangi post
+          </button>
+        </div>
+
+        <form id="newPostForm" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1.5rem; padding: 1.25rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: #101010;">
+          <div>
+            <label for="postTitle">Post sarlavhasi</label>
+            <input id="postTitle" class="wizard-input" required maxlength="255" placeholder="Masalan: Yangi yozgi ichimliklar">
+          </div>
+          <div>
+            <label for="postImage">Rasm havolasi yoki qurilmadan tanlang</label>
+            <input id="postImage" class="wizard-input" type="text" placeholder="https://...">
+            <input id="postImageFile" type="file" accept="image/*" class="wizard-input" style="margin-top: .5rem;">
+          </div>
+          <div style="grid-column: 1 / -1;">
+            <label for="postCaption">Post matni</label>
+            <textarea id="postCaption" class="wizard-input" rows="3" placeholder="Post haqida qisqacha yozing..."></textarea>
+          </div>
+          <div style="grid-column: 1 / -1; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <img id="postImagePreview" alt="Post rasmi" style="display: none; width: 76px; height: 76px; border-radius: 12px; object-fit: cover;">
+            <button type="submit" class="btn btn-primary" id="publishPostButton"><i class="fa fa-paper-plane"></i> Postni joylash</button>
+            <span id="postFormMessage" role="status" style="font-size: .85rem; color: var(--text-secondary);"></span>
+          </div>
+        </form>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr><th>Rasm</th><th>Post</th><th>Matn</th><th>Sana</th><th>Amallar</th></tr>
+            </thead>
+            <tbody id="postsTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
       <!-- Settings Section Tab -->
       <section id="tabSettings" class="data-table-card" style="display: none;">
-        <h2 style="font-size: 1.3rem; margin-bottom: 1.5rem;">Do'kon va Integratsiya Sozlamalari</h2>
+        <h2 style="font-size: 1.3rem; margin-bottom: .5rem;">Do‘kon sozlamalari</h2>
+        <p style="color: var(--text-secondary); font-size: .9rem; margin-bottom: 1.25rem;">Do‘kon nomi, telefon va bosh sahifadagi e’lonni o‘zgartiring.</p>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <div style="max-width: 680px; display: grid; gap: .75rem;">
           <div>
             <label style="font-size: 0.85rem; color: var(--text-muted);">Do'kon nomi</label>
             <input type="text" id="settingStoreName" class="wizard-input" style="margin-top: 0.4rem; margin-bottom: 1rem;">
@@ -314,25 +395,23 @@
             <label style="font-size: 0.85rem; color: var(--text-muted);">Aksiya e'lon matni (Banner)</label>
             <textarea id="settingStoreBanner" class="wizard-input" rows="3" style="margin-top: 0.4rem;"></textarea>
           </div>
-
-          <div>
-            <div style="background: rgba(34, 158, 217, 0.1); border: 1px solid rgba(34, 158, 217, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
-              <h4 style="color: #38bdf8; font-size: 0.95rem; margin-bottom: 0.5rem;"><i class="fa-brands fa-telegram"></i> Telegram Bot Integratsiyasi</h4>
-              <p style="font-size: 0.8rem;">Yangi buyurtmalar avtomatik sizning botingiz orqali shaxsiy Telegramingizga keladi.</p>
-              <input type="text" id="settingTgBot" class="wizard-input" placeholder="@bot_nomi" style="margin-top: 0.5rem;">
-            </div>
-
-            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 1rem;">
-              <h4 style="color: #34d399; font-size: 0.95rem; margin-bottom: 0.5rem;"><i class="fa fa-credit-card"></i> Click & Payme Merchant</h4>
-              <p style="font-size: 0.8rem;">To'lovlar to'g'ridan-to'g'ri bank hisobingizga tushadi.</p>
-              <input type="text" class="wizard-input" value="MERCHANT-UZ-9842" style="margin-top: 0.5rem;" readonly>
-            </div>
-          </div>
         </div>
+        <input type="hidden" id="settingTgBot">
 
         <button onclick="saveSettingsForm()" class="btn btn-primary" style="margin-top: 1.5rem;">
           Sozlamalarni Saqlash ✓
         </button>
+
+        <div style="margin-top: 2rem; padding: 1.5rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: #101010;">
+          <h3 style="margin: 0 0 .5rem; color: #f8fafc;">Face ID bilan kirish</h3>
+          <p style="margin: 0 0 1rem; color: var(--text-secondary); font-size: .9rem; line-height: 1.6;">
+            Qurilmangiz qo‘llasa Face ID, aks holda Touch ID yoki Windows Hello orqali tez kirishni yoqing.
+            Yuz tasviri saytga yuborilmaydi va saqlanmaydi.
+          </p>
+          <p id="passkeyStatus" style="margin: 0 0 1rem; color: #93c5fd; font-size: .85rem;"></p>
+          <button type="button" class="btn btn-primary" id="addPasskeyButton">Biometrik kirishni qo‘shish</button>
+          <form id="passkeyCsrfForm" hidden>{% csrf_token %}</form>
+        </div>
       </section>
     </main>
   </div>
@@ -341,11 +420,12 @@
   <div class="modal-overlay" id="productModal">
     <div class="modal-box">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <h3 style="font-size: 1.3rem;">Yangi Mahsulot Qo'shish</h3>
+        <h3 style="font-size: 1.3rem;" id="productModalTitle">Yangi Mahsulot Qo'shish</h3>
         <button onclick="closeProductModal()" style="background: none; border: none; color: white; font-size: 1.3rem; cursor: pointer;">✕</button>
       </div>
 
       <form id="newProductForm">
+        <input type="hidden" id="editingProductId">
         <div style="margin-bottom: 1rem;">
           <label style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.4rem;">
             📸 Rasm yuklash (Kompyuteringizdan tanlang)
@@ -365,6 +445,18 @@
         <div style="margin-bottom: 1rem;">
           <label style="font-size: 0.85rem; color: var(--text-muted);">Mahsulot nomi</label>
           <input type="text" id="pName" class="wizard-input" required placeholder="Masalan: Pepsi 1.5L">
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+          <label style="font-size: 0.85rem; color: var(--text-muted);">Kategoriya</label>
+          <select id="pCategory" class="wizard-input">
+            <option value="drinks">Ichimliklar</option>
+            <option value="water">Suv</option>
+            <option value="food">Oziq-ovqat</option>
+            <option value="fashion">Kiyim-kechak</option>
+            <option value="gadgets">Gadjetlar</option>
+            <option value="other">Boshqa</option>
+          </select>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
@@ -393,6 +485,80 @@
 
   <script src="/static/app.js"></script>
   <script>
+    const PASSKEY_COUNT = {{ passkey_count|default:0 }};
+
+    function passkeyDecodeBase64Url(value) {
+      const base64 = value.replace(/-/g, '+').replace(/_/g, '/');
+      const bytes = atob(base64 + '='.repeat((4 - base64.length % 4) % 4));
+      return Uint8Array.from(bytes, character => character.charCodeAt(0)).buffer;
+    }
+
+    function passkeyEncodeBase64Url(value) {
+      const bytes = new Uint8Array(value);
+      let binary = '';
+      bytes.forEach(byte => { binary += String.fromCharCode(byte); });
+      return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+    }
+
+    async function passkeyPost(url, body = {}) {
+      const csrfToken = document.querySelector('#passkeyCsrfForm [name=csrfmiddlewaretoken]').value;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+        body: JSON.stringify(body)
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'So‘rov bajarilmadi.');
+      return data;
+    }
+
+    function passkeyCredentialToJSON(credential) {
+      return {
+        id: credential.id,
+        rawId: passkeyEncodeBase64Url(credential.rawId),
+        type: credential.type,
+        response: {
+          clientDataJSON: passkeyEncodeBase64Url(credential.response.clientDataJSON),
+          attestationObject: passkeyEncodeBase64Url(credential.response.attestationObject),
+          transports: credential.response.getTransports ? credential.response.getTransports() : []
+        }
+      };
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const status = document.getElementById('passkeyStatus');
+      const button = document.getElementById('addPasskeyButton');
+      status.textContent = PASSKEY_COUNT
+        ? `${PASSKEY_COUNT} passkey ushbu admin hisobiga ulangan. Yana qurilma qo‘shishingiz mumkin.`
+        : 'Hali passkey ulanmagan. Birinchi marta admin paroli bilan kirganingizdan so‘ng shu yerda sozlang.';
+
+      button.addEventListener('click', async () => {
+        if (!window.PublicKeyCredential || !navigator.credentials) {
+          status.textContent = 'Bu brauzer passkey bilan kirishni qo‘llab-quvvatlamaydi.';
+          return;
+        }
+        button.disabled = true;
+        status.textContent = 'Qurilma tasdiqlashini kutyapmiz…';
+        try {
+          const options = await passkeyPost('/api/auth/passkey/register/begin/');
+          options.challenge = passkeyDecodeBase64Url(options.challenge);
+          options.user.id = passkeyDecodeBase64Url(options.user.id);
+          options.excludeCredentials = (options.excludeCredentials || []).map(item => ({
+            ...item,
+            id: passkeyDecodeBase64Url(item.id)
+          }));
+          const credential = await navigator.credentials.create({ publicKey: options });
+          await passkeyPost('/api/auth/passkey/register/finish/', passkeyCredentialToJSON(credential));
+          status.textContent = 'Passkey qo‘shildi. Keyingi safar qurilmangiz biometrik tasdiqlashini ishlating.';
+          button.textContent = 'Yana qurilma qo‘shish';
+        } catch (error) {
+          status.textContent = error.message || 'Passkey qo‘shilmadi. Qayta urinib ko‘ring.';
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+
     function selectDashImage(url) {
       document.getElementById('pImage').value = url;
     }
@@ -564,6 +730,288 @@
       saveStore(store);
       alert('Sozlamalar muvaffaqiyatli saqlandi! Endi vitrinada aks etadi.');
       loadDashboardData();
+    }
+  </script>
+
+  <script>
+    let dashboardData = null;
+    const dashboardTabHistory = ['products'];
+    let dashboardTabHistoryIndex = 0;
+
+    function escapeHTML(value) {
+      return String(value ?? '').replace(/[&<>"']/g, character => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[character]);
+    }
+
+    async function adminRequest(url, method = 'GET', body = null) {
+      const csrf = document.querySelector('#passkeyCsrfForm [name=csrfmiddlewaretoken]').value;
+      const options = { method, headers: { 'X-CSRFToken': csrf } };
+      if (body !== null) {
+        options.headers['Content-Type'] = 'application/json';
+        options.body = JSON.stringify(body);
+      }
+      const response = await fetch(url, options);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'So‘rov bajarilmadi.');
+      return data;
+    }
+
+    function readImageFile(file, callback) {
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        alert('Faqat rasm faylini tanlang.');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Rasm hajmi 5 MB dan oshmasin.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => callback(String(reader.result));
+      reader.onerror = () => alert('Rasmni o‘qib bo‘lmadi.');
+      reader.readAsDataURL(file);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const productForm = document.getElementById('newProductForm');
+      productForm.addEventListener('submit', saveProduct, true);
+      document.getElementById('dashLocalFile').addEventListener('change', event => {
+        readImageFile(event.target.files[0], image => {
+          document.getElementById('pImage').value = image;
+        });
+      });
+      document.getElementById('postImageFile').addEventListener('change', event => {
+        readImageFile(event.target.files[0], image => {
+          document.getElementById('postImage').value = image;
+          const preview = document.getElementById('postImagePreview');
+          preview.src = image;
+          preview.style.display = 'block';
+        });
+      });
+      document.getElementById('postImage').addEventListener('input', event => {
+        const preview = document.getElementById('postImagePreview');
+        preview.src = event.target.value;
+        preview.style.display = event.target.value ? 'block' : 'none';
+      });
+      document.getElementById('newPostForm').addEventListener('submit', publishPost);
+    });
+
+    async function loadDashboardData() {
+      const ordersBody = document.getElementById('ordersTableBody');
+      try {
+        dashboardData = await adminRequest('/api/admin/dashboard/');
+        renderDashboard();
+      } catch (error) {
+        ordersBody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#f87171;padding:2rem">${escapeHTML(error.message)}</td></tr>`;
+      }
+    }
+
+    function renderDashboard() {
+      const { config, orders, products, stories, revenue, active_orders } = dashboardData;
+      document.querySelector('#dashStoreName span:last-child').textContent = config.name;
+      document.getElementById('dashStoreIcon').textContent = config.icon || '🛍️';
+      document.getElementById('statRevenue').textContent = formatSum(revenue);
+      document.getElementById('statOrders').textContent = `${orders.length} ta`;
+      document.getElementById('statProducts').textContent = `${products.length} xil`;
+      document.getElementById('statActiveOrders').textContent = `${active_orders} ta`;
+      document.getElementById('settingStoreName').value = config.name;
+      document.getElementById('settingStorePhone').value = config.phone;
+      document.getElementById('settingStoreBanner').value = config.banner_text;
+      document.getElementById('settingTgBot').value = config.tg_bot;
+
+      const ordersBody = document.getElementById('ordersTableBody');
+      ordersBody.innerHTML = orders.length ? orders.map(order => {
+        const badge = {
+          'Yetkazilmoqda': 'status-yetkazilmoqda',
+          'Tugallandi': 'status-tugallandi',
+          'Bekor qilindi': 'status-bekor'
+        }[order.status] || 'status-yangi';
+        return `<tr>
+          <td><strong style="color:#fff">${escapeHTML(order.id)}</strong><br><small>${new Date(order.created_at).toLocaleString('uz-UZ')}</small></td>
+          <td><strong>${escapeHTML(order.customer)}</strong><br><small>${escapeHTML(order.phone)}</small><br><small>${escapeHTML(order.address)}</small></td>
+          <td style="max-width:200px">${escapeHTML(order.items)}</td>
+          <td><span style="color:#38bdf8">${escapeHTML(order.payment)}</span></td>
+          <td><strong>${formatSum(order.total)}</strong></td>
+          <td><span class="status-badge ${badge}">${escapeHTML(order.status)}</span></td>
+          <td><select aria-label="Buyurtma holati" data-order-id="${escapeHTML(order.id)}" onchange="updateOrderStatus(this.dataset.orderId, this.value)" style="background:#151515;color:white;border:1px solid var(--border-subtle);padding:6px;border-radius:6px">
+            ${['Yangi','Yetkazilmoqda','Tugallandi','Bekor qilindi'].map(status => `<option ${status === order.status ? 'selected' : ''}>${status}</option>`).join('')}
+          </select></td>
+        </tr>`;
+      }).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:2rem">Hozircha buyurtmalar yo‘q.</td></tr>';
+
+      document.getElementById('productsTableBody').innerHTML = products.length ? products.map(product => `<tr>
+        <td><img src="${escapeHTML(product.image)}" alt="" style="width:48px;height:48px;border-radius:8px;object-fit:cover"></td>
+        <td><strong>${escapeHTML(product.name)}</strong><br><small>${escapeHTML(product.description)}</small></td>
+        <td><span style="color:#38bdf8;font-weight:700">${formatSum(product.price)}</span></td>
+        <td>${product.stock} dona</td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-secondary btn-sm" onclick="editProduct(${product.id})" aria-label="Tahrirlash"><i class="fa fa-pen"></i> Tahrirlash</button>
+          <button class="btn btn-secondary btn-sm" onclick="deleteProduct(${product.id})" style="color:#f87171" aria-label="O‘chirish"><i class="fa fa-trash"></i> O‘chirish</button>
+        </td>
+      </tr>`).join('') : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:2rem">Mahsulotlar hali yo‘q. “Mahsulot qo‘shish” orqali boshlang.</td></tr>';
+
+      document.getElementById('postsTableBody').innerHTML = stories.length ? stories.map(story => `<tr>
+        <td><img src="${escapeHTML(story.image)}" alt="" style="width:52px;height:52px;border-radius:10px;object-fit:cover"></td>
+        <td><strong>${escapeHTML(story.title)}</strong></td>
+        <td style="max-width:300px">${escapeHTML(story.caption)}</td>
+        <td>${new Date(story.created_at).toLocaleDateString('uz-UZ')}</td>
+        <td><button class="btn btn-secondary btn-sm" onclick="deletePost(${story.id})" style="color:#f87171"><i class="fa fa-trash"></i> O‘chirish</button></td>
+      </tr>`).join('') : '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:2rem">Hozircha post yo‘q. Yuqoridagi formadan birinchi postni joylang.</td></tr>';
+    }
+
+    function switchTab(tab, element) {
+      if (dashboardTabHistory[dashboardTabHistoryIndex] !== tab) {
+        dashboardTabHistory.splice(dashboardTabHistoryIndex + 1);
+        dashboardTabHistory.push(tab);
+        dashboardTabHistoryIndex = dashboardTabHistory.length - 1;
+      }
+      document.querySelectorAll('.dash-menu-link').forEach(link => {
+        link.classList.toggle('active', link.getAttribute('onclick').includes(`'${tab}'`));
+      });
+      ['orders', 'products', 'posts', 'settings'].forEach(name => {
+        document.getElementById(`tab${name[0].toUpperCase()}${name.slice(1)}`).style.display = tab === name ? 'block' : 'none';
+      });
+      updateDashboardNavigation();
+    }
+
+    function updateDashboardNavigation() {
+      document.getElementById('dashboardBackButton').disabled = dashboardTabHistoryIndex === 0;
+      document.getElementById('dashboardForwardButton').disabled = dashboardTabHistoryIndex >= dashboardTabHistory.length - 1;
+    }
+
+    function navigateDashboardTab(direction) {
+      const nextIndex = dashboardTabHistoryIndex + direction;
+      if (nextIndex < 0 || nextIndex >= dashboardTabHistory.length) return;
+      dashboardTabHistoryIndex = nextIndex;
+      const tab = dashboardTabHistory[dashboardTabHistoryIndex];
+      document.querySelectorAll('.dash-menu-link').forEach(link => {
+        link.classList.toggle('active', link.getAttribute('onclick').includes(`'${tab}'`));
+      });
+      ['orders', 'products', 'posts', 'settings'].forEach(name => {
+        document.getElementById(`tab${name[0].toUpperCase()}${name.slice(1)}`).style.display = tab === name ? 'block' : 'none';
+      });
+      updateDashboardNavigation();
+    }
+
+    async function updateOrderStatus(orderId, status) {
+      try {
+        await adminRequest(`/api/order/status/${encodeURIComponent(orderId)}/`, 'POST', { status });
+        await loadDashboardData();
+      } catch (error) {
+        alert(error.message);
+        await loadDashboardData();
+      }
+    }
+
+    async function saveProduct(event) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const id = document.getElementById('editingProductId').value;
+      const payload = {
+        name: document.getElementById('pName').value.trim(),
+        category: document.getElementById('pCategory').value,
+        price: document.getElementById('pPrice').value,
+        stock: document.getElementById('pStock').value,
+        image: document.getElementById('pImage').value.trim(),
+        description: document.getElementById('pDesc').value.trim()
+      };
+      const button = event.currentTarget.querySelector('[type=submit]');
+      button.disabled = true;
+      try {
+        await adminRequest(id ? `/api/product/update/${id}/` : '/api/product/create/', 'POST', payload);
+        closeProductModal();
+        await loadDashboardData();
+      } catch (error) {
+        alert(error.message);
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    function editProduct(id) {
+      const product = dashboardData.products.find(item => item.id === id);
+      if (!product) return;
+      document.getElementById('editingProductId').value = product.id;
+      document.getElementById('pName').value = product.name;
+      document.getElementById('pCategory').value = product.category;
+      document.getElementById('pPrice').value = product.price;
+      document.getElementById('pStock').value = product.stock;
+      document.getElementById('pImage').value = product.image;
+      document.getElementById('pDesc').value = product.description;
+      document.getElementById('productModalTitle').textContent = 'Mahsulotni tahrirlash';
+      document.getElementById('productModal').style.display = 'flex';
+    }
+
+    async function deleteProduct(id) {
+      if (!confirm('Mahsulotni do‘kon katalogidan butunlay o‘chirasizmi?')) return;
+      try {
+        await adminRequest(`/api/product/delete/${id}/`, 'POST');
+        await loadDashboardData();
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    async function publishPost(event) {
+      event.preventDefault();
+      const message = document.getElementById('postFormMessage');
+      const button = document.getElementById('publishPostButton');
+      button.disabled = true;
+      message.textContent = 'Post joylanmoqda…';
+      try {
+        await adminRequest('/api/story/create/', 'POST', {
+          title: document.getElementById('postTitle').value.trim(),
+          caption: document.getElementById('postCaption').value.trim(),
+          image: document.getElementById('postImage').value.trim()
+        });
+        event.currentTarget.reset();
+        document.getElementById('postImagePreview').style.display = 'none';
+        message.textContent = 'Post do‘kon vitrinasiga joylandi.';
+        await loadDashboardData();
+      } catch (error) {
+        message.textContent = error.message;
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    async function deletePost(id) {
+      if (!confirm('Post va storylar ro‘yxatidan o‘chirilsinmi?')) return;
+      try {
+        await adminRequest(`/api/story/delete/${id}/`, 'POST', {});
+        await loadDashboardData();
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    function openAddProductModal() {
+      document.getElementById('newProductForm').reset();
+      document.getElementById('editingProductId').value = '';
+      document.getElementById('productModalTitle').textContent = 'Yangi mahsulot qo‘shish';
+      document.getElementById('pImage').value = 'https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=400&q=80';
+      document.getElementById('productModal').style.display = 'flex';
+      document.getElementById('pName').focus();
+    }
+
+    function closeProductModal() {
+      document.getElementById('productModal').style.display = 'none';
+    }
+
+    async function saveSettingsForm() {
+      try {
+        await adminRequest('/api/admin/settings/', 'POST', {
+          name: document.getElementById('settingStoreName').value.trim(),
+          phone: document.getElementById('settingStorePhone').value.trim(),
+          banner_text: document.getElementById('settingStoreBanner').value.trim(),
+          tg_bot: document.getElementById('settingTgBot').value.trim()
+        });
+        alert('Sozlamalar saqlandi.');
+        await loadDashboardData();
+      } catch (error) {
+        alert(error.message);
+      }
     }
   </script>
 

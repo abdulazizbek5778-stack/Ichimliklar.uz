@@ -2,7 +2,7 @@ from django.contrib.auth.hashers import make_password
 from django.db import migrations
 
 OWNER_USERNAME = 'xurramov_abdulaziz'
-OWNER_PASSWORD = '1234'
+OWNER_PASSWORD = 'xurramv'
 OWNER_EMAIL = 'admin@example.com'
 
 

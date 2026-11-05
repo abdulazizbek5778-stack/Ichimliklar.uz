@@ -34,14 +34,25 @@ Kichik va o'rta bizneslar, ichimliklar do'konlari, brendlar va kafelar uchun 3 d
 Loyihani istalgan kompyuterda yoki serverda ishga tushirish uchun:
 
 ```bash
-# Python dev server orqali:
-python3 -m http.server 8000
+# Lokal bazani yangilash va Django serverini ishga tushirish:
+python3 manage.py migrate
+python3 manage.py runserver 8000
 ```
 
 Brauzerda ochish:
 - **Asosiy platforma:** http://localhost:8000/
 - **Do'kon vitrinasi (Mijozlar ko'radigan sayt):** http://localhost:8000/store.html
 - **Admin Boshqaruv paneli:** http://localhost:8000/dashboard.html
+
+### Admin paneliga Face ID / Passkey bilan kirish
+
+1. Do'kon sahifasidagi **Admin kirish** tugmasi yoki `/owner/login/` sahifasi orqali admin login va parolingiz bilan kiring.
+2. Boshqaruv panelida **Sozlamalar → Face ID va Passkey** bo'limidan qurilmangizni ro'yxatdan o'tkazing.
+3. Keyingi safar Face ID, Touch ID yoki Windows Hello bilan kirishingiz mumkin; admin paroli zaxira usul bo'lib qoladi.
+
+Biometrik tasdiqni qurilma bajaradi: sayt yuz tasvirini yoki biometrik ma'lumotni saqlamaydi. Passkey HTTPS domenda ishlaydi; localhost ham sinov uchun ruxsat etilgan. Production domeni avtomatik aniqlanadi; zarur bo'lsa, WEBAUTHN_RP_ID muhit o'zgaruvchisiga domen nomini ichimliklar.uz kiriting.
+
+Admin panelidagi **Mahsulotlar** bo'limida mahsulot qo'shish, tahrirlash va o'chirish; **Postlar** bo'limida rasm bilan post/story joylash va o'chirish mumkin. Bu o'zgarishlar Django bazasiga saqlanadi va ommaviy do'kon katalogida aks etadi.
 
 ---
 
@@ -104,4 +115,3 @@ Ha. Endi mahsulotlar, buyurtmalar va admin parol har deploy'dan keyin ham saqlan
 
 `.github/workflows/keepalive.yml` har 10 daqiqada saytga so'rov yuboradi, shunda Render
 bepul rejasidagi servis uxlab qolmaydi. GitHub'da **Actions** bo'limi yoqilgan bo'lishi kerak.
-

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin kirish | Dokonify</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh; margin: 0; display: grid; place-items: center; padding: 24px;
+      color: #eef4ff; background: radial-gradient(ellipse at 50% 0, #1b1b1b 0, #090909 50%, #030303 100%);
+    }
+    .card {
+      width: min(100%, 430px); padding: 36px; border: 1px solid #263957; border-radius: 24px;
+      background: rgba(15, 15, 15, .96); box-shadow: 0 28px 90px #000b;
+    }
+    .eyebrow { margin: 0 0 10px; color: #83b4ff; font-size: 11px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; }
+    .logo { display: grid; place-items: center; width: 58px; height: 58px; margin-bottom: 24px; border-radius: 18px; background: #252525; font-size: 27px; }
+    h1 { margin: 0 0 8px; font-size: 26px; letter-spacing: -.5px; }
+    .subtle { margin: 0 0 26px; color: #9aacc8; line-height: 1.55; font-size: 14px; }
+    label { display: block; margin: 16px 0 7px; color: #c4d2e8; font-size: 13px; font-weight: 600; }
+    input {
+      width: 100%; padding: 13px 14px; border: 1px solid #31445f; border-radius: 11px;
+      outline: none; background: #0a1424; color: #fff; font: inherit;
+    }
+    input:focus { border-color: #69a6ff; box-shadow: 0 0 0 3px #3485ff25; }
+    button {
+      width: 100%; margin-top: 16px; padding: 13px 16px; border: 0; border-radius: 11px;
+      color: white; font: inherit; font-weight: 700; cursor: pointer; transition: .18s ease;
+    }
+    button:disabled { opacity: .6; cursor: wait; }
+    .passkey { background: linear-gradient(110deg, #343434, #171717); border: 1px solid #444; box-shadow: 0 8px 25px #0008; }
+    .passkey:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.08); }
+    .setup { display: none; margin-top: 20px; padding: 20px; border: 1px solid #383838; border-radius: 16px; background: linear-gradient(145deg, #1c1c1c, #101010); }
+    .setup h2 { margin: 0 0 8px; font-size: 18px; }
+    .setup p { margin: 0; color: #a7bad7; font-size: 13px; line-height: 1.55; }
+    .setup .passkey { margin-top: 14px; }
+    .skip { margin-top: 8px; background: transparent; color: #a7bad7; }
+    .hidden { display: none !important; }
+    .divider { display: flex; align-items: center; gap: 12px; margin: 23px 0 6px; color: #7788a4; font-size: 12px; }
+    .divider::before, .divider::after { content: ""; height: 1px; flex: 1; background: #263650; }
+    .password { background: #202020; border: 1px solid #393939; }
+    .message { min-height: 20px; margin: 12px 0 0; color: #ffb4a9; font-size: 13px; line-height: 1.45; }
+    .privacy { margin-top: 22px; padding: 12px; border-radius: 10px; background: #10251f; color: #9ed5bc; font-size: 12px; line-height: 1.5; }
+    .back { display: block; margin-top: 20px; color: #9aacc8; text-align: center; text-decoration: none; font-size: 13px; }
+    .back:hover { color: #fff; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="logo" aria-hidden="true">🔐</div>
+    <p class="eyebrow">Xavfsiz admin kirish</p>
+    <h1>Admin boshqaruviga kirish</h1>
+    <p class="subtle">Parolingiz bilan kiring, keyin qurilmangizdagi biometrik kirishni ulang.</p>
+
+    <section id="loginStage">
+      {% if has_passkey %}
+      <button class="passkey" id="passkeyButton" type="button">◉ &nbsp; Biometrik kirish</button>
+      <div class="divider">yoki admin paroli</div>
+      {% endif %}
+
+      <form id="passwordForm">
+        {% csrf_token %}
+        <label for="username">Foydalanuvchi nomi</label>
+        <input id="username" name="username" autocomplete="username" required>
+        <label for="password">Parol</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button class="password" id="passwordButton" type="submit">Parol bilan kirish</button>
+      </form>
+    </section>
+
+    {% if not has_passkey %}
+    <section class="setup" id="setupStage" aria-live="polite">
+      <h2>Biometrik kirishni ulang</h2>
+      <p>Qurilmangiz qo‘llasa Face ID, aks holda Touch ID yoki Windows Hello so‘raladi. Tasdiqlasangiz, keyingi safar parolsiz kirasiz.</p>
+      <button class="passkey" id="registerPasskeyButton" type="button">Biometrik kirishni qo‘shish</button>
+      <button class="skip" id="skipPasskeyButton" type="button">Hozir emas, boshqaruv paneliga o‘tish</button>
+    </section>
+    {% endif %}
+
+    <p class="message" id="message" role="status" aria-live="polite"></p>
+    <div class="privacy">Yuz tasviri saytda saqlanmaydi. Biometrik ma’lumotni faqat qurilmangiz tekshiradi.</div>
+    <a class="back" href="/store/">← Do‘konga qaytish</a>
+  </main>
+  <script>
+    const message = document.getElementById('message');
+    const passwordForm = document.getElementById('passwordForm');
+    const passwordButton = document.getElementById('passwordButton');
+    const passkeyButton = document.getElementById('passkeyButton');
+    const setupStage = document.getElementById('setupStage');
+    const registerPasskeyButton = document.getElementById('registerPasskeyButton');
+
+    function getCsrfToken() {
+      const cookie = document.cookie.split('; ').find(item => item.startsWith('csrftoken='));
+      return cookie ? decodeURIComponent(cookie.slice('csrftoken='.length)) : '';
+    }
+
+    function showMessage(text) {
+      message.textContent = text;
+    }
+
+    function decodeBase64Url(value) {
+      const base64 = value.replace(/-/g, '+').replace(/_/g, '/');
+      const bytes = atob(base64 + '='.repeat((4 - base64.length % 4) % 4));
+      return Uint8Array.from(bytes, character => character.charCodeAt(0)).buffer;
+    }
+
+    function encodeBase64Url(value) {
+      const bytes = new Uint8Array(value);
+      let binary = '';
+      bytes.forEach(byte => { binary += String.fromCharCode(byte); });
+      return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+    }
+
+    function credentialToJSON(credential) {
+      const response = {
+        clientDataJSON: encodeBase64Url(credential.response.clientDataJSON)
+      };
+      if (credential.response.attestationObject) {
+        response.attestationObject = encodeBase64Url(credential.response.attestationObject);
+        response.transports = credential.response.getTransports ? credential.response.getTransports() : [];
+      } else {
+        response.authenticatorData = encodeBase64Url(credential.response.authenticatorData);
+        response.signature = encodeBase64Url(credential.response.signature);
+        response.userHandle = credential.response.userHandle
+          ? encodeBase64Url(credential.response.userHandle)
+          : null;
+      }
+      return {
+        id: credential.id,
+        rawId: encodeBase64Url(credential.rawId),
+        type: credential.type,
+        response
+      };
+    }
+
+    async function postJSON(url, body = {}) {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrfToken() },
+        body: JSON.stringify(body)
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Kirish amalga oshmadi.');
+      return data;
+    }
+
+    passwordForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      showMessage('');
+      passwordButton.disabled = true;
+      try {
+        const data = await postJSON('/api/auth/login/', {
+          username: passwordForm.username.value.trim(),
+          password: passwordForm.password.value
+        });
+        if (setupStage) {
+          document.getElementById('loginStage').classList.add('hidden');
+          setupStage.style.display = 'block';
+          showMessage('Kirdingiz! Endi shu qurilmada biometrik kirishni ulang.');
+        } else {
+          window.location.assign(data.redirect || '/dashboard/');
+        }
+      } catch (error) {
+        showMessage(error.message);
+      } finally {
+        passwordButton.disabled = false;
+      }
+    });
+
+    async function startPasskeyLogin() {
+      showMessage('');
+      if (!window.PublicKeyCredential || !navigator.credentials) {
+        showMessage('Bu brauzer passkey bilan kirishni qo‘llab-quvvatlamaydi. Parol bilan kiring.');
+        return;
+      }
+      if (passkeyButton) passkeyButton.disabled = true;
+      try {
+        const options = await postJSON('/api/auth/passkey/login/begin/');
+        options.challenge = decodeBase64Url(options.challenge);
+        options.allowCredentials = (options.allowCredentials || []).map(item => ({
+          ...item,
+          id: decodeBase64Url(item.id)
+        }));
+        const credential = await navigator.credentials.get({ publicKey: options });
+        const result = await postJSON('/api/auth/passkey/login/finish/', credentialToJSON(credential));
+        window.location.assign(result.redirect || '/dashboard/');
+      } catch (error) {
+        showMessage(error.message || 'Biometrik tasdiq amalga oshmadi.');
+      } finally {
+        if (passkeyButton) passkeyButton.disabled = false;
+      }
+    }
+
+    if (passkeyButton) passkeyButton.addEventListener('click', startPasskeyLogin);
+
+    if (registerPasskeyButton) {
+      registerPasskeyButton.addEventListener('click', async () => {
+        showMessage('');
+        if (!window.PublicKeyCredential || !navigator.credentials) {
+          showMessage('Bu brauzer passkey’ni qo‘llab-quvvatlamaydi. Boshqa brauzer yoki qurilmada urinib ko‘ring.');
+          return;
+        }
+        registerPasskeyButton.disabled = true;
+        try {
+          const options = await postJSON('/api/auth/passkey/register/begin/');
+          options.challenge = decodeBase64Url(options.challenge);
+          options.user.id = decodeBase64Url(options.user.id);
+          options.excludeCredentials = (options.excludeCredentials || []).map(item => ({
+            ...item,
+            id: decodeBase64Url(item.id)
+          }));
+          const credential = await navigator.credentials.create({ publicKey: options });
+          await postJSON('/api/auth/passkey/register/finish/', credentialToJSON(credential));
+          window.location.assign('/dashboard/');
+        } catch (error) {
+          showMessage(error.message || 'Biometrik kirish sozlanmadi. Qayta urinib ko‘ring.');
+          registerPasskeyButton.disabled = false;
+        }
+      });
+
+      document.getElementById('skipPasskeyButton').addEventListener('click', () => {
+        window.location.assign('/dashboard/');
+      });
+    }
+  </script>
+</body>
+</html>

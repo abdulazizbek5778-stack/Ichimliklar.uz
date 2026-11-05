@@ -11,6 +11,7 @@ python-dotenv>=1.0          # bo'lmasa settings.py o'zi o'qiydi, lekin tavsiya e
 
 # --- Google OAuth 2.0 (shop/views.py) ---
 google-auth>=2.20           # Google bilan kirishni tekshirish
+webauthn>=2.6,<3.0          # Face ID / Touch ID / passkey orqali xavfsiz kirish
 
 # --- Rasm maydonlari uchun (media/) ---
 Pillow>=10.0

@@ -165,6 +165,261 @@
       margin-bottom: 4rem;
     }
 
+    .lead-section {
+      margin: 0 0 4rem;
+      padding: 2rem;
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(108, 140, 255, 0.25);
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(17, 24, 39, 0.9));
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
+    }
+
+    .lead-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .lead-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .eyebrow {
+      margin: 0;
+      font-size: 0.74rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      font-weight: 800;
+    }
+
+    .lead-copy h2 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.1;
+      color: #f8fafc;
+    }
+
+    .lead-copy p {
+      margin: 0;
+      color: #cbd5e1;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .lead-points {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.85rem;
+      margin-top: 0.5rem;
+    }
+
+    .lead-point {
+      background: rgba(148, 163, 184, 0.08);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: 16px;
+      padding: 0.9rem 0.8rem;
+      color: #e2e8f0;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .lead-point strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      color: #f8fafc;
+      font-size: 0.9rem;
+    }
+
+    .order-card {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(96, 165, 250, 0.25);
+      border-radius: 22px;
+      padding: 1.35rem;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    .order-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      gap: 0.75rem;
+    }
+
+    .order-card-header h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      color: #f8fafc;
+    }
+
+    .mini-badge {
+      background: rgba(34, 197, 94, 0.12);
+      color: #86efac;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      border-radius: 999px;
+      padding: 0.3rem 0.7rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .order-form {
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+    }
+
+    .order-form label {
+      display: block;
+      margin-bottom: 0.38rem;
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+
+    .order-form input,
+    .order-form textarea,
+    .order-form select {
+      width: 100%;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.9);
+      color: #f8fafc;
+      padding: 0.8rem 0.9rem;
+      font: inherit;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .order-form textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .order-form input:focus,
+    .order-form textarea:focus,
+    .order-form select:focus {
+      border-color: rgba(96, 165, 250, 0.8);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+    }
+
+    .order-submit {
+      margin-top: 0.4rem;
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.38);
+    }
+
+    .order-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45);
+    }
+
+    .reviews-section {
+      margin: 0 0 4rem;
+    }
+
+    .section-head {
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(1.8rem, 2.5vw, 2.5rem);
+      color: #f8fafc;
+    }
+
+    .section-head .tag {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #a78bfa;
+    }
+
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .review-card {
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 20px;
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .review-top {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .review-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: white;
+      font-size: 1rem;
+    }
+
+    .review-meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .review-meta strong {
+      color: #f8fafc;
+      font-size: 0.95rem;
+    }
+
+    .review-meta span {
+      color: #a5b4cf;
+      font-size: 0.74rem;
+    }
+
+    .stars {
+      color: #fbbf24;
+      letter-spacing: 0.12em;
+      font-size: 0.82rem;
+    }
+
+    .review-card p {
+      margin: 0;
+      color: #dbe5f3;
+      line-height: 1.7;
+      font-size: 0.93rem;
+    }
+
     .store-card {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
@@ -720,6 +975,112 @@
     <div class="products-grid" id="productsGrid">
       <!-- Injected via JavaScript from Django SQLite -->
     </div>
+
+    <section class="lead-section" aria-labelledby="lead-title">
+      <div class="lead-layout">
+        <div class="lead-copy">
+          <p class="eyebrow">Sizga osonlik</p>
+          <h2 id="lead-title">Buyurtma qoldiring — biz tezda javob beramiz.</h2>
+          <p>
+            Mahsulotni tanlang, istalgan vaqt va manzilni yozing. Biz sizga tezkor konsultatsiya,
+            to’lov va yetkazib berish haqida aniq ma’lumot beramiz.
+          </p>
+          <div class="lead-points">
+            <div class="lead-point">
+              <strong>⚡ Tez javob</strong>
+              15 daqiqada qayta aloqa
+            </div>
+            <div class="lead-point">
+              <strong>💳 Qulay to’lov</strong>
+              Naqd yoki elektron to’lov
+            </div>
+            <div class="lead-point">
+              <strong>📦 Yetkazib berish</strong>
+              O’z hududda tezkor etkazish
+            </div>
+          </div>
+        </div>
+
+        <div class="order-card">
+          <div class="order-card-header">
+            <h3>Buyurtma qoldirish</h3>
+            <span class="mini-badge">Online</span>
+          </div>
+
+          <form class="order-form" id="leadForm">
+            <div class="field-row">
+              <div>
+                <label for="leadName">Ismingiz</label>
+                <input id="leadName" name="leadName" type="text" placeholder="Masalan: Aziza" required>
+              </div>
+              <div>
+                <label for="leadPhone">Telefon</label>
+                <input id="leadPhone" name="leadPhone" type="tel" placeholder="+998 91 123 45 67" required>
+              </div>
+            </div>
+
+            <div>
+              <label for="leadProduct">Mahsulot yoki xizmat</label>
+              <input id="leadProduct" name="leadProduct" type="text" placeholder="Masalan: 2L suv + 1 dona limonad">
+            </div>
+
+            <div>
+              <label for="leadMessage">Xabar</label>
+              <textarea id="leadMessage" name="leadMessage" placeholder="Yetkazib berish manzili, tezlik, miqdor va boshqa ma'lumotlarni yozing..."></textarea>
+            </div>
+
+            <button type="submit" class="order-submit">Buyurtma qoldirish</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="reviews-section" aria-labelledby="reviews-title">
+      <div class="section-head">
+        <div>
+          <p class="tag">Mijozlar fikri</p>
+          <h2 id="reviews-title">Biz bilan ishlaganlar nima deyishadi</h2>
+        </div>
+      </div>
+
+      <div class="reviews-grid">
+        <article class="review-card">
+          <div class="review-top">
+            <div class="review-avatar">N</div>
+            <div class="review-meta">
+              <strong>Nodira</strong>
+              <span>Buyurtmachi</span>
+            </div>
+          </div>
+          <div class="stars" aria-label="5 yulduz">★★★★★</div>
+          <p>“Muyassar va tezkor xizmat. Buyurtma berish juda oson bo’ldi, yetkazish vaqtida ham hamma narsa to’g’ri kelib qoldi.”</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-top">
+            <div class="review-avatar">A</div>
+            <div class="review-meta">
+              <strong>Aziz</strong>
+              <span>Doimiy mijoz</span>
+            </div>
+          </div>
+          <div class="stars" aria-label="5 yulduz">★★★★★</div>
+          <p>“Mahsulot sifati yaxshi, xizmat ham chiroyli. Eng yaxshi tomoni — savatchadan tez buyurtma berish va menejerlar quyoshdek javob beradi.”</p>
+        </article>
+
+        <article class="review-card">
+          <div class="review-top">
+            <div class="review-avatar">M</div>
+            <div class="review-meta">
+              <strong>Malika</strong>
+              <span>Ofis buyurtmasi</span>
+            </div>
+          </div>
+          <div class="stars" aria-label="5 yulduz">★★★★★</div>
+          <p>“Biz ofis uchun buyurtma berdik, hech qanday muammo bo’lmadi. Shartnoma va yetkazib berish jarayoni juda muloyim va tushunarli edi.”</p>
+        </article>
+      </div>
+    </section>
   </main>
 
   <!-- FULLSCREEN INSTAGRAM/TELEGRAM STORY VIEWER MODAL -->
@@ -822,19 +1183,19 @@
       <form id="adminLoginForm">
         <div style="margin-bottom: 1rem;">
           <label style="font-size: 0.85rem; color: var(--text-muted);">Login (Foydalanuvchi nomi)</label>
-          <input type="text" id="adminUsernameInput" class="wizard-input" value="xurramov_abdulaziz" required autocomplete="username">
+          <input type="text" id="adminUsernameInput" class="wizard-input" placeholder="Admin login" required autocomplete="username">
         </div>
 
         <div style="margin-bottom: 1.25rem;">
           <label style="font-size: 0.85rem; color: var(--text-muted);">Parol</label>
           <div style="display: flex; gap: 0.5rem;">
-            <input type="password" id="adminPasswordInput" class="wizard-input" value="1234" required autocomplete="current-password">
+            <input type="password" id="adminPasswordInput" class="wizard-input" placeholder="Admin parol" required autocomplete="current-password">
             <button type="button" class="btn btn-secondary" onclick="toggleAdminPassVisibility()">👁️</button>
           </div>
         </div>
 
         <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 0.6rem; font-size: 0.8rem; color: #93c5fd; margin-bottom: 1.25rem;">
-          🔑 Boshlang'ich parol: <strong style="color: white;">1234</strong>
+          🔑 Parol faqat admin uchun; ekran ochilmaydi.
         </div>
 
         <div style="display: flex; gap: 0.75rem;">
@@ -1897,6 +2258,45 @@
       btn.classList.add('active');
       renderProducts();
     }
+
+    document.getElementById('leadForm')?.addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const name = document.getElementById('leadName').value.trim();
+      const phone = document.getElementById('leadPhone').value.trim();
+      const product = document.getElementById('leadProduct').value.trim();
+      const message = document.getElementById('leadMessage').value.trim();
+
+      if (!name || !phone) {
+        alert('Iltimos, ismingiz va telefon raqamingizni kiriting.');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/order/create/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customer: name,
+            phone: phone,
+            address: message || 'Manzil belgilanmagan',
+            items: product || 'Buyurtma qoldirish',
+            total: 0,
+            payment: 'Buyurtma qoldirish',
+            message: message,
+            product: product
+          })
+        });
+
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || 'Buyurtma qabul qilinmadi.');
+
+        const orderText = product ? `Mahsulot: ${product}.` : 'Mahsulot tanlandi.';
+        alert(`Rahmat, ${name}! Buyurtmangiz qabul qilindi. ${orderText} Biz tez orada ${phone} raqamiga qaytib bog'lanamiz.${message ? ' Izoh: ' + message : ''}`);
+        event.target.reset();
+      } catch (error) {
+        alert(error.message || 'Buyurtma qabul qilishda xatolik yuz berdi.');
+      }
+    });
 
     function openCreateModal() {
       document.getElementById('modalFormTitle').textContent = "Yangi Mahsulot / Post Qo'shish";
